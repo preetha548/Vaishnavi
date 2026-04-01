@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BrandShield - Online Protection</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<style>
+body {
+  background: linear-gradient(135deg,#f1f5f9,#e2e8f0);
+  color:#1e293b;
+}
+
+.login-bg {
+  background: linear-gradient(rgba(255,255,255,0.9),rgba(255,255,255,0.9)),
+              url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b') center/cover;
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.card {
+  background:white;
+  border-radius:12px;
+  padding:20px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.1);
+}
+
+.hero {
+  background: linear-gradient(rgba(255,255,255,0.7),rgba(255,255,255,0.7)),
+              url('https://images.unsplash.com/photo-1605902711622-cfb43c4437d1') center/cover;
+  height:180px;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom:20px;
+}
+
+.safe-card { background:#dcfce7; }
+.unsafe-card { background:#fee2e2; }
+</style>
+</head>
+
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+
+function App(){
+  const [user,setUser]=React.useState(null);
+  const [url,setUrl]=React.useState("");
+  const [report,setReport]=React.useState(null);
+
+  const [safeCount,setSafeCount]=React.useState(0);
+  const [unsafeCount,setUnsafeCount]=React.useState(0);
+
+  // 🔐 Login
+  const login=(u,p)=>{
+    if(u==="admin" && p==="1234"){
+      setUser(u);
+    } else {
+      alert("Invalid login (Use admin / 1234)");
+    }
+  };
+
+  const logout=()=>setUser(null);
+
+  // 🔍 Website Analysis Logic
+  const analyzeURL=(url)=>{
+    let score=100;
+    let reasons=[];
+
+    try{
+      const parsed=new URL(url);
+      const host=parsed.hostname.toLowerCase();
+
+      if(parsed.protocol!=="https:"){
+        score-=30;
+        reasons.push("Not using HTTPS");
+      }
+
+      if(/^\d+\.\d+\.\d+\.\d+$/.test(host)){
+        score-=25;
+        reasons.push("Using IP address");
+      }
+
+      const words=["login","verify","bank","secure","free","gift"];
+      words.forEach(w=>{
+        if(url.toLowerCase().includes(w)){
+          score-=8;
+          reasons.push("Suspicious keyword: "+w);
+        }
+      });
+
+      if(url.length>70){
+        score-=10;
+        reasons.push("URL too long");
+      }
+
+    }catch{
+      return {score:0,status:"Unsafe",reasons:["Invalid URL"]};
+    }
+
+    if(score<0) score=0;
+
+    return {
+      score,
+      status: score>=70?"Safe":"Unsafe",
+      reasons
+    };
+  };
+
+  const scan=()=>{
+    if(!url.startsWith("http")){
+      alert("Enter valid URL (https://...)");
+      return;
+    }
+
+    const result=analyzeURL(url);
+    setReport({...result,url});
+
+    if(result.status==="Safe"){
+      setSafeCount(safeCount+1);
+    }else{
+      setUnsafeCount(unsafeCount+1);
+    }
+  };
+
+  if(!user) return <Login login={login}/>;
+
+  return(
+    <div className="container py-4">
+
+      {/* HERO */}
+      <div className="hero">
+        <h2>🛡️ Brand Protection Dashboard</h2>
+      </div>
+
+      <button className="btn btn-danger mb-3" onClick={logout}>Logout</button>
+
+      {/* DASHBOARD */}
+      <div className="row text-center mb-3">
+        <div className="col-md-4">
+          <div className="card">
+            <h5>✅ Safe</h5>
+            <h2>{safeCount}</h2>
+          </div>
+        </div>
+
+        <div className="col-md-4">
+          <div className="card">
+            <h5>⚠️ Unsafe</h5>
+            <h2>{unsafeCount}</h2>
+          </div>
+        </div>
+
+        <div className="col-md-4">
+          <div className="card">
+            <h5>📊 Total</h5>
+            <h2>{safeCount+unsafeCount}</h2>
+          </div>
+        </div>
+      </div>
+
+      {/* SCANNER */}
+      <div className="card mb-3">
+        <h4>🔍 Analyze Website</h4>
+        <input className="form-control mb-2" placeholder="Enter URL"
+          onChange={e=>setUrl(e.target.value)} />
+        <button className="btn btn-primary" onClick={scan}>Analyze</button>
+      </div>
+
+      {/* RESULT */}
+      {report && (
+        <>
+          <div className={`card mb-3 ${report.status==="Safe"?"safe-card":"unsafe-card"}`}>
+            <h4>{report.status==="Safe" ? "✅ Safe Website" : "⚠️ Unsafe Website"}</h4>
+            <h2>{report.score}%</h2>
+          </div>
+
+          <div className="card">
+            <h5>📄 Report</h5>
+            <p><b>URL:</b> {report.url}</p>
+            <p><b>Status:</b> {report.status}</p>
+            <p><b>Score:</b> {report.score}%</p>
+
+            <h6>⚠️ Reasons:</h6>
+            {report.reasons.length===0 ? (
+              <p>No issues detected</p>
+            ) : (
+              <ul>
+                {report.reasons.map((r,i)=>(
+                  <li key={i}>{r}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </>
+      )}
+
+    </div>
+  );
+}
+
+
+// 🔐 LOGIN PAGE
+function Login({login}){
+  const [u,setU]=React.useState("");
+  const [p,setP]=React.useState("");
+
+  return(
+    <div className="login-bg">
+      <div className="card" style={{width:"350px"}}>
+
+        <img src="https://images.unsplash.com/photo-1510511233900-1982d92bd835"
+             className="img-fluid mb-3 rounded"/>
+
+        <h3 className="text-center">🔐 Admin Login</h3>
+
+        <input className="form-control mb-2" placeholder="Username"
+          onChange={e=>setU(e.target.value)} />
+
+        <input type="password" className="form-control mb-2" placeholder="Password"
+          onChange={e=>setP(e.target.value)} />
+
+        <button className="btn btn-primary w-100"
+          onClick={()=>login(u,p)}>Login</button>
+
+        <small className="text-muted d-block text-center mt-2">
+          Demo: admin / 1234
+        </small>
+
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+
+</script>
+</body>
+</html>
