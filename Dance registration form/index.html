@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Registration Form</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+  <h1>Registration Form</h1>
+
+  <form id="regForm">
+
+    <label>Child’s Name</label>
+    <input type="text" id="childName" required>
+
+    <label>Parent/Guardian Name</label>
+    <input type="text" id="parentName" required>
+
+    <label>Address</label>
+    <textarea id="address" required></textarea>
+
+    <label>E-mail Address</label>
+    <input type="email" id="email" required>
+
+    <label>Phone Numbers</label>
+    <div class="row">
+      <input type="text" placeholder="Home">
+      <input type="text" placeholder="Cell">
+      <input type="text" placeholder="Work">
+    </div>
+
+    <h3>Age Information</h3>
+    <div class="row">
+      <input type="date" id="dob">
+      <input type="number" id="age" placeholder="Age">
+    </div>
+
+    <label>Last School Grade Completed</label>
+    <input type="text">
+
+    <label>Home Church</label>
+    <input type="text">
+
+    <label>Allergies / Medical Information / Other</label>
+    <textarea></textarea>
+
+    <h3>Emergency Contacts</h3>
+    <div class="row">
+      <input type="text" placeholder="Name">
+      <input type="text" placeholder="Phone">
+    </div>
+    <div class="row">
+      <input type="text" placeholder="Name">
+      <input type="text" placeholder="Phone">
+    </div>
+
+    <h3>Dismissal Information</h3>
+    <textarea placeholder="Who may pick up this child"></textarea>
+
+    <h3>Other Information</h3>
+    <input type="text" placeholder="Visioneer Group">
+
+    <label>Are parents helping with VBS?</label>
+    <div class="row">
+      <input type="text" placeholder="Yes/No">
+      <input type="text" placeholder="If yes, where?">
+    </div>
+
+    <button type="submit">Submit</button>
+
+  </form>
+
+  <p id="message"></p>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
