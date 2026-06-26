@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Beer Cheers Splash</title>
+
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        background: radial-gradient(circle at top, #1a1a1a, #000);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        font-family: Arial;
+    }
+
+    .scene {
+        position: relative;
+        width: 400px;
+        height: 300px;
+    }
+
+    .glass {
+        position: absolute;
+        bottom: 0;
+        width: 80px;
+        height: 140px;
+        background: rgba(255,255,255,0.08);
+        border: 3px solid rgba(255,255,255,0.3);
+        border-radius: 10px;
+        overflow: hidden;
+        backdrop-filter: blur(3px);
+    }
+
+    .glass.left { left: 60px; transform: rotate(-8deg); }
+    .glass.right { right: 60px; transform: rotate(8deg); }
+
+    .beer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 70%;
+        background: linear-gradient(#f7b733, #f29900);
+    }
+
+    .foam {
+        position: absolute;
+        top: -10px;
+        width: 100%;
+        height: 20px;
+        background: white;
+        border-radius: 50%;
+    }
+
+    /* SPLASH PARTICLES */
+    .particle {
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        background: #ffcc66;
+        border-radius: 50%;
+        opacity: 0;
+        animation: fly 1s ease-out forwards;
+    }
+
+    @keyframes fly {
+        0% {
+            transform: translate(0,0) scale(1);
+            opacity: 1;
+        }
+        100% {
+            transform: translate(var(--x), var(--y)) scale(0.3);
+            opacity: 0;
+        }
+    }
+
+    .cheers-text {
+        position: absolute;
+        top: -60px;
+        width: 100%;
+        text-align: center;
+        color: #fff;
+        font-size: 28px;
+        opacity: 0;
+        transition: 0.4s;
+    }
+
+    .scene.active .cheers-text {
+        opacity: 1;
+        transform: translateY(-10px);
+    }
+</style>
+</head>
+
+<body>
+
+<div class="scene" id="scene">
+    <div class="cheers-text">🍻 Cheers!</div>
+
+    <div class="glass left">
+        <div class="beer"></div>
+        <div class="foam"></div>
+    </div>
+
+    <div class="glass right">
+        <div class="beer"></div>
+        <div class="foam"></div>
+    </div>
+</div>
+
+<script>
+const scene = document.getElementById("scene");
+
+function createSplash(x, y) {
+    for (let i = 0; i < 25; i++) {
+        const p = document.createElement("div");
+        p.classList.add("particle");
+
+        const angle = Math.random() * 2 * Math.PI;
+        const distance = Math.random() * 120 + 30;
+
+        const dx = Math.cos(angle) * distance + "px";
+        const dy = Math.sin(angle) * distance + "px";
+
+        p.style.left = x + "px";
+        p.style.top = y + "px";
+        p.style.setProperty("--x", dx);
+        p.style.setProperty("--y", dy);
+
+        document.body.appendChild(p);
+
+        setTimeout(() => p.remove(), 1000);
+    }
+}
+
+scene.addEventListener("click", (e) => {
+    scene.classList.add("active");
+
+    const rect = scene.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+
+    createSplash(x, y);
+
+    setTimeout(() => {
+        scene.classList.remove("active");
+    }, 500);
+});
+</script>
+
+</body>
+</html>
