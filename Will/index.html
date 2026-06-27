@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Last Will and Testament</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="top-icons">
+    <button onclick="downloadPDF()">📥 Download</button>
+    <button onclick="window.print()">🖨 Print</button>
+    <button onclick="enableEdit()">✏ Edit</button>
+</div>
+
+<div class="container" id="document">
+
+    <h1>Last Will and Testament</h1>
+
+    <h3>OF</h3>
+
+    <input type="text" class="line center" placeholder="Full Name">
+
+    <p>
+        I,
+        <input type="text" class="line" placeholder="Your Name">,
+        of the City of
+        <input type="text" class="line" placeholder="City">,
+        County of
+        <input type="text" class="line" placeholder="County">,
+        and State of
+        <input type="text" class="line" placeholder="State">,
+        declare this to be my Last Will and Testament and hereby revoke all of my prior wills and codicils.
+    </p>
+
+    <h2>1. PERSONAL REPRESENTATIVE</h2>
+
+    <p>
+        I hereby nominate and appoint
+        <input type="text" class="line" placeholder="Representative Name">
+        with a mailing address of
+        <input type="text" class="line" placeholder="Address">,
+        City of
+        <input type="text" class="line" placeholder="City">,
+        State of
+        <input type="text" class="line" placeholder="State">
+        as the Personal Representative of my estate.
+    </p>
+
+    <p>
+        If my first choice does not serve, I nominate
+        <input type="text" class="line" placeholder="Alternate Representative">
+        with mailing address
+        <input type="text" class="line" placeholder="Address">.
+    </p>
+
+    <h2>2. DEBTS & EXPENSES</h2>
+
+    <p>
+        I hereby instruct my Personal Representative to promptly settle all my outstanding debts and expenses related to my final illness, funeral, and burial upon my demise.
+    </p>
+
+    <p>
+        Additionally, I grant my Personal Representative full discretion to settle any claims against my estate and to use estate funds to pay inheritance or estate taxes.
+    </p>
+
+    <br><br>
+
+    <div class="signature">
+        _______________________________
+        <br>
+        Signature
+    </div>
+
+    <div class="signature">
+        _______________________________
+        <br>
+        Date
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
