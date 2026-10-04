@@ -1,0 +1,73 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Chocolate Cake",
+      "price": 550,
+      "stock": 1
+    },
+    {
+      "id": 2,
+      "name": "Black Forest Cake",
+      "price": 650,
+      "stock": 15
+    },
+    {
+      "id": 3,
+      "name": "Red Velvet Cake",
+      "price": 750,
+      "stock": 10
+    },
+    {
+      "id": 4,
+      "name": "Cup Cake",
+      "price": 80,
+      "stock": 50
+    },
+    {
+      "id": 5,
+      "name": "Donut",
+      "price": 60,
+      "stock": 50
+    },
+    {
+      "id": 6,
+      "name": "Cookies",
+      "price": 120,
+      "stock": 40
+    },
+    {
+      "id": 7,
+      "name": "Brownie",
+      "price": 100,
+      "stock": 30
+    },
+    {
+      "id": 8,
+      "name": "Bread",
+      "price": 50,
+      "stock": 40
+    },
+    {
+      "id": 9,
+      "name": "Puff",
+      "price": 40,
+      "stock": 50
+    },
+    {
+      "id": 10,
+      "name": "Pizza",
+      "price": 250,
+      "stock": 20
+    }
+  ],
+  "invoices": [],
+  "customers": [
+    {
+      "id": 1791132672681,
+      "name": "preethavaishnavi",
+      "phone": "9876543211"
+    }
+  ],
+  "exportedAt": "2026-10-04T17:37:54.002Z"
+}

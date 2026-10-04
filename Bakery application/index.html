@@ -1,0 +1,4477 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Sweet Oven Bakery - Management System</title>
+
+<style>
+
+:root{
+    --primary:#8e3b63;
+    --primary2:#702c4d;
+    --bg:#fff3f6;
+    --card:#fff;
+    --text:#333;
+    --muted:#777;
+    --border:#ddd;
+    --green:#198754;
+    --red:#dc3545;
+    --blue:#0d6efd;
+    --orange:#f59e0b;
+    --shadow:0 4px 15px rgba(0,0,0,.08);
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,Helvetica,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+body.dark{
+    --bg:#18181b;
+    --card:#27272a;
+    --text:#f4f4f5;
+    --muted:#aaa;
+    --border:#444;
+}
+
+button,
+input,
+select{
+    font:inherit;
+}
+
+button{
+    border:0;
+    border-radius:7px;
+    padding:10px 15px;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:.88;
+}
+
+header{
+    background:linear-gradient(135deg,#8e3b63,#b84f7f);
+    color:white;
+    padding:22px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo h1{
+    margin:0;
+}
+
+.logo p{
+    margin:5px 0 0;
+}
+
+.header-actions{
+    display:flex;
+    gap:8px;
+}
+
+.layout{
+    display:flex;
+    min-height:calc(100vh - 90px);
+}
+
+.sidebar{
+    width:230px;
+    background:#401a2d;
+    color:white;
+    padding:18px 12px;
+}
+
+.sidebar button{
+    display:block;
+    width:100%;
+    text-align:left;
+    margin-bottom:7px;
+    background:transparent;
+    color:white;
+}
+
+.sidebar button:hover,
+.sidebar button.active{
+    background:#8e3b63;
+}
+
+.main{
+    flex:1;
+    padding:25px;
+    overflow:hidden;
+}
+
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+}
+
+.card{
+    background:var(--card);
+    border-radius:12px;
+    padding:20px;
+    box-shadow:var(--shadow);
+    margin-bottom:20px;
+}
+
+h2{
+    color:var(--primary);
+    margin-top:0;
+}
+
+body.dark h2{
+    color:#f28ab5;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+}
+
+.stat{
+    padding:20px;
+    border-radius:12px;
+    color:white;
+}
+
+.stat h3{
+    margin:0 0 8px;
+    font-size:14px;
+}
+
+.stat strong{
+    font-size:26px;
+}
+
+.purple{
+    background:#8e3b63;
+}
+
+.green{
+    background:#198754;
+}
+
+.blue{
+    background:#0d6efd;
+}
+
+.orange{
+    background:#f59e0b;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+.form-grid.three{
+    grid-template-columns:repeat(3,1fr);
+}
+
+label{
+    display:block;
+    font-weight:bold;
+    margin-bottom:6px;
+}
+
+input,
+select{
+    width:100%;
+    padding:11px;
+    border:1px solid var(--border);
+    border-radius:7px;
+    background:var(--card);
+    color:var(--text);
+}
+
+.btn-primary{
+    background:var(--primary);
+    color:white;
+}
+
+.btn-success{
+    background:var(--green);
+    color:white;
+}
+
+.btn-danger{
+    background:var(--red);
+    color:white;
+}
+
+.btn-blue{
+    background:var(--blue);
+    color:white;
+}
+
+.btn-warning{
+    background:var(--orange);
+    color:white;
+}
+
+.btn-gray{
+    background:#6c757d;
+    color:white;
+}
+
+.actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+}
+
+.table-wrap{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,
+td{
+    padding:11px;
+    border:1px solid var(--border);
+    text-align:center;
+}
+
+th{
+    background:var(--primary);
+    color:white;
+}
+
+.badge{
+    display:inline-block;
+    padding:5px 9px;
+    border-radius:20px;
+    font-size:12px;
+    color:white;
+}
+
+.badge.green{
+    background:var(--green);
+}
+
+.badge.red{
+    background:var(--red);
+}
+
+.badge.orange{
+    background:var(--orange);
+}
+
+.badge.blue{
+    background:var(--blue);
+}
+
+.bill-layout{
+    display:grid;
+    grid-template-columns:1fr 360px;
+    gap:20px;
+}
+
+.summary-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:9px 0;
+    border-bottom:1px solid var(--border);
+}
+
+.grand{
+    font-size:20px;
+    font-weight:bold;
+    color:var(--primary);
+}
+
+.invoice-head{
+    text-align:center;
+}
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.65);
+    z-index:1000;
+    overflow:auto;
+}
+
+.modal-box{
+    background:var(--card);
+    color:var(--text);
+    width:90%;
+    max-width:900px;
+    margin:40px auto;
+    padding:25px;
+    border-radius:12px;
+}
+
+.close{
+    float:right;
+    font-size:28px;
+    cursor:pointer;
+}
+
+.customer-info{
+    background:#fff0f5;
+    border-radius:8px;
+    padding:15px;
+    margin-bottom:15px;
+}
+
+body.dark .customer-info{
+    background:#3a2430;
+}
+
+.customer-actions{
+    display:flex;
+    gap:5px;
+    justify-content:center;
+    flex-wrap:wrap;
+}
+
+.low-stock{
+    color:var(--red);
+    font-weight:bold;
+}
+
+.empty{
+    padding:20px;
+    text-align:center;
+    color:var(--muted);
+}
+
+@media(max-width:900px){
+
+    .sidebar{
+        width:190px;
+    }
+
+    .grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .bill-layout{
+        grid-template-columns:1fr;
+    }
+
+}
+
+@media(max-width:650px){
+
+    header{
+        flex-direction:column;
+        gap:12px;
+        text-align:center;
+    }
+
+    .layout{
+        display:block;
+    }
+
+    .sidebar{
+        width:100%;
+        display:flex;
+        overflow-x:auto;
+        gap:5px;
+    }
+
+    .sidebar button{
+        min-width:130px;
+    }
+
+    .main{
+        padding:12px;
+    }
+
+    .grid,
+    .form-grid,
+    .form-grid.three{
+        grid-template-columns:1fr;
+    }
+
+}
+
+@media print{
+
+    body{
+        background:white;
+        color:#000;
+    }
+
+    header,
+    .sidebar,
+    .no-print{
+        display:none!important;
+    }
+
+    .main{
+        padding:0;
+    }
+
+    .page{
+        display:none!important;
+    }
+
+    #billing{
+        display:block!important;
+    }
+
+    .card{
+        box-shadow:none;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+
+        <h1>🍰 Sweet Oven Bakery</h1>
+
+        <p>
+            Advanced Bakery Management System
+        </p>
+
+    </div>
+
+    <div class="header-actions">
+
+        <button
+            class="btn-gray"
+            onclick="toggleTheme()">
+
+            🌙 Theme
+
+        </button>
+
+    </div>
+
+</header>
+
+
+<div class="layout">
+
+<aside class="sidebar">
+
+    <button
+        class="active"
+        onclick="showPage('dashboard',this)">
+
+        📊 Dashboard
+
+    </button>
+
+    <button
+        onclick="showPage('billing',this)">
+
+        🧾 Billing
+
+    </button>
+
+    <button
+        onclick="showPage('products',this)">
+
+        📦 Products
+
+    </button>
+
+    <button
+        onclick="showPage('customers',this)">
+
+        👥 Customers
+
+    </button>
+
+    <button
+        onclick="showPage('backup',this)">
+
+        💾 Backup
+
+    </button>
+
+</aside>
+
+
+<main class="main">
+
+
+<!-- =====================================================
+     DASHBOARD
+===================================================== -->
+
+<section
+    id="dashboard"
+    class="page active">
+
+    <h2>📊 Dashboard</h2>
+
+    <div class="grid">
+
+        <div class="stat purple">
+
+            <h3>Total Sales</h3>
+
+            <strong id="dashSales">
+                ₹0
+            </strong>
+
+        </div>
+
+        <div class="stat green">
+
+            <h3>Total Bills</h3>
+
+            <strong id="dashInvoices">
+                0
+            </strong>
+
+        </div>
+
+        <div class="stat blue">
+
+            <h3>Total Products</h3>
+
+            <strong id="dashProducts">
+                0
+            </strong>
+
+        </div>
+
+        <div class="stat orange">
+
+            <h3>Total Customers</h3>
+
+            <strong id="dashCustomers">
+                0
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Today's Summary</h2>
+
+        <div class="grid">
+
+            <div>
+
+                <b>Today's Sales</b>
+
+                <h2 id="todaySales">
+                    ₹0
+                </h2>
+
+            </div>
+
+            <div>
+
+                <b>Today's Bills</b>
+
+                <h2 id="todayBills">
+                    0
+                </h2>
+
+            </div>
+
+            <div>
+
+                <b>Cash Received</b>
+
+                <h2 id="cashReceived">
+                    ₹0
+                </h2>
+
+            </div>
+
+            <div>
+
+                <b>Pending Balance</b>
+
+                <h2 id="pendingBalance">
+                    ₹0
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Recent Bills</h2>
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Bill No.</th>
+                        <th>Customer</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="recentInvoices"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     BILLING
+===================================================== -->
+
+<section
+    id="billing"
+    class="page">
+
+    <h2>🧾 Billing</h2>
+
+    <div class="bill-layout">
+
+        <div>
+
+            <div class="card">
+
+                <div class="form-grid">
+
+                    <div>
+
+                        <label>
+                            Bill Number
+                        </label>
+
+                        <input
+                            id="invoiceNo"
+                            readonly>
+
+                    </div>
+
+                    <div>
+
+                        <label>
+                            Date
+                        </label>
+
+                        <input
+                            id="invoiceDate"
+                            type="date">
+
+                    </div>
+
+                    <div>
+
+                        <label>
+                            Customer
+                        </label>
+
+                        <input
+                            id="billCustomer"
+                            placeholder="Customer name">
+
+                    </div>
+
+                    <div>
+
+                        <label>
+                            Phone
+                        </label>
+
+                        <input
+                            id="billPhone"
+                            placeholder="Phone number">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <h2>➕ Add Item</h2>
+
+                <div class="form-grid three">
+
+                    <div>
+
+                        <label>
+                            Product
+                        </label>
+
+                        <select id="billProduct"></select>
+
+                    </div>
+
+                    <div>
+
+                        <label>
+                            Quantity
+                        </label>
+
+                        <input
+                            id="billQty"
+                            type="number"
+                            min="1"
+                            value="1">
+
+                    </div>
+
+                    <div>
+
+                        <label>
+                            Price
+                        </label>
+
+                        <input
+                            id="billPrice"
+                            readonly>
+
+                    </div>
+
+                </div>
+
+                <br>
+
+                <button
+                    class="btn-primary"
+                    onclick="addBillItem()">
+
+                    ➕ Add Item
+
+                </button>
+
+            </div>
+
+
+            <div class="card">
+
+                <h2>🛒 Bill Items</h2>
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>#</th>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Qty</th>
+                                <th>Amount</th>
+                                <th>Actions</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="billItems"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div>
+
+            <div class="card">
+
+                <h2>
+                    Bill Summary
+                </h2>
+
+                <div class="summary-row">
+
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <b>
+                        ₹<span id="billSubtotal">
+                            0.00
+                        </span>
+                    </b>
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span>
+                        GST (%)
+                    </span>
+
+                    <input
+                        id="gstRate"
+                        type="number"
+                        value="5"
+                        min="0"
+                        style="width:80px"
+                        onchange="calculateBill()">
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span>
+                        GST
+                    </span>
+
+                    <b>
+                        ₹<span id="billGST">
+                            0.00
+                        </span>
+                    </b>
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span>
+                        Discount
+                    </span>
+
+                    <input
+                        id="discount"
+                        type="number"
+                        value="0"
+                        min="0"
+                        style="width:100px"
+                        onchange="calculateBill()">
+
+                </div>
+
+
+                <div class="summary-row grand">
+
+                    <span>
+                        Grand Total
+                    </span>
+
+                    <b>
+                        ₹<span id="billTotal">
+                            0.00
+                        </span>
+                    </b>
+
+                </div>
+
+
+                <br>
+
+                <label>
+                    Payment Method
+                </label>
+
+                <select id="paymentMethod">
+
+                    <option>
+                        Cash
+                    </option>
+
+                    <option>
+                        UPI
+                    </option>
+
+                    <option>
+                        Card
+                    </option>
+
+                    <option>
+                        Credit
+                    </option>
+
+                </select>
+
+
+                <br><br>
+
+
+                <label>
+                    Paid Amount
+                </label>
+
+                <input
+                    id="paidAmount"
+                    type="number"
+                    min="0"
+                    value="0"
+                    oninput="calculateBill()">
+
+
+                <br><br>
+
+
+                <div class="summary-row">
+
+                    <span>
+                        Balance / Change
+                    </span>
+
+                    <b>
+                        ₹<span id="balance">
+                            0.00
+                        </span>
+                    </b>
+
+                </div>
+
+
+                <br>
+
+
+                <div class="actions">
+
+                    <button
+                        class="btn-success"
+                        onclick="saveInvoice()">
+
+                        💾 Save Bill
+
+                    </button>
+
+                    <button
+                        class="btn-blue"
+                        onclick="printCurrentInvoice()">
+
+                        🖨 Print
+
+                    </button>
+
+                    <button
+                        class="btn-gray"
+                        onclick="newInvoice()">
+
+                        🆕 New
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     PRODUCTS
+===================================================== -->
+
+<section
+    id="products"
+    class="page">
+
+    <h2>
+        📦 Product / Item Management
+    </h2>
+
+
+    <div class="card">
+
+        <h2>
+            ➕ Add Item
+        </h2>
+
+        <div class="form-grid three">
+
+            <div>
+
+                <label>
+                    Item Name
+                </label>
+
+                <input
+                    id="productName"
+                    placeholder="Example: Chocolate Cake">
+
+            </div>
+
+            <div>
+
+                <label>
+                    Price
+                </label>
+
+                <input
+                    id="productPrice"
+                    type="number"
+                    min="0"
+                    placeholder="0">
+
+            </div>
+
+            <div>
+
+                <label>
+                    Stock
+                </label>
+
+                <input
+                    id="productStock"
+                    type="number"
+                    min="0"
+                    placeholder="0">
+
+            </div>
+
+        </div>
+
+        <br>
+
+        <button
+            class="btn-primary"
+            onclick="saveProduct()">
+
+            💾 Add Item
+
+        </button>
+
+        <button
+            class="btn-gray"
+            onclick="clearProductForm()">
+
+            Clear
+
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>
+            📦 Item List
+        </h2>
+
+        <input
+            class="search"
+            id="productSearch"
+            placeholder="Search item..."
+            oninput="renderProducts()">
+
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Item</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="productTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     CUSTOMERS
+===================================================== -->
+
+<section
+    id="customers"
+    class="page">
+
+    <h2>
+        👥 Customer Management
+    </h2>
+
+    <div class="card">
+
+        <h2>
+            Add / Update Customer
+        </h2>
+
+        <div class="form-grid">
+
+            <div>
+
+                <label>
+                    Customer Name
+                </label>
+
+                <input
+                    id="customerName"
+                    placeholder="Enter customer name">
+
+            </div>
+
+            <div>
+
+                <label>
+                    Phone Number
+                </label>
+
+                <input
+                    id="customerPhone"
+                    placeholder="Enter phone number">
+
+            </div>
+
+        </div>
+
+        <br>
+
+        <button
+            class="btn-primary"
+            onclick="saveCustomer()">
+
+            💾 Save Customer
+
+        </button>
+
+        <button
+            class="btn-gray"
+            onclick="clearCustomerForm()">
+
+            Clear
+
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <input
+            class="search"
+            id="customerSearch"
+            placeholder="Search customer..."
+            oninput="renderCustomers()">
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Customer</th>
+                        <th>Phone</th>
+                        <th>Total Bills</th>
+                        <th>Total Purchase</th>
+                        <th>Last Purchase</th>
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="customerTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     BACKUP
+===================================================== -->
+
+<section
+    id="backup"
+    class="page">
+
+    <h2>
+        💾 Backup & Restore
+    </h2>
+
+    <div class="card">
+
+        <h2>
+            Export Data
+        </h2>
+
+        <p>
+            Download all items, bills and customers.
+        </p>
+
+        <button
+            class="btn-success"
+            onclick="exportData()">
+
+            📥 Download Backup
+
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>
+            Import Data
+        </h2>
+
+        <input
+            type="file"
+            id="importFile"
+            accept=".json">
+
+        <br><br>
+
+        <button
+            class="btn-blue"
+            onclick="importData()">
+
+            📤 Restore Backup
+
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>
+            Danger Zone
+        </h2>
+
+        <button
+            class="btn-danger"
+            onclick="clearAllData()">
+
+            ⚠ Delete All Data
+
+        </button>
+
+    </div>
+
+</section>
+
+
+</main>
+</div>
+
+
+<!-- =====================================================
+     MODAL
+===================================================== -->
+
+<div
+    id="modal"
+    class="modal">
+
+    <div class="modal-box">
+
+        <span
+            class="close"
+            onclick="closeModal()">
+
+            &times;
+
+        </span>
+
+        <div id="modalContent"></div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   DATABASE
+========================================================= */
+
+let products =
+JSON.parse(
+    localStorage.getItem("sweetProducts")
+) || [
+
+    {
+        id:1,
+        name:"Chocolate Cake",
+        price:550,
+        stock:20
+    },
+
+    {
+        id:2,
+        name:"Black Forest Cake",
+        price:650,
+        stock:15
+    },
+
+    {
+        id:3,
+        name:"Red Velvet Cake",
+        price:750,
+        stock:10
+    },
+
+    {
+        id:4,
+        name:"Cup Cake",
+        price:80,
+        stock:50
+    },
+
+    {
+        id:5,
+        name:"Donut",
+        price:60,
+        stock:50
+    },
+
+    {
+        id:6,
+        name:"Cookies",
+        price:120,
+        stock:40
+    },
+
+    {
+        id:7,
+        name:"Brownie",
+        price:100,
+        stock:30
+    },
+
+    {
+        id:8,
+        name:"Bread",
+        price:50,
+        stock:40
+    },
+
+    {
+        id:9,
+        name:"Puff",
+        price:40,
+        stock:50
+    },
+
+    {
+        id:10,
+        name:"Pizza",
+        price:250,
+        stock:20
+    }
+
+];
+
+
+let invoices =
+JSON.parse(
+    localStorage.getItem("sweetInvoices")
+) || [];
+
+
+let customers =
+JSON.parse(
+    localStorage.getItem("sweetCustomers")
+) || [];
+
+
+let currentItems=[];
+
+let editingProduct=null;
+
+let editingCustomer=null;
+
+
+/* =========================================================
+   DATABASE SAVE
+========================================================= */
+
+function saveDatabase(){
+
+    localStorage.setItem(
+        "sweetProducts",
+        JSON.stringify(products)
+    );
+
+    localStorage.setItem(
+        "sweetInvoices",
+        JSON.stringify(invoices)
+    );
+
+    localStorage.setItem(
+        "sweetCustomers",
+        JSON.stringify(customers)
+    );
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function showPage(id,btn){
+
+    document.querySelectorAll(".page")
+    .forEach(
+        p=>p.classList.remove("active")
+    );
+
+    document
+        .getElementById(id)
+        .classList.add("active");
+
+
+    document.querySelectorAll(".sidebar button")
+    .forEach(
+        b=>b.classList.remove("active")
+    );
+
+
+    if(btn){
+        btn.classList.add("active");
+    }
+
+    refreshAll();
+
+}
+
+
+/* =========================================================
+   THEME
+========================================================= */
+
+function toggleTheme(){
+
+    document.body.classList.toggle("dark");
+
+    localStorage.setItem(
+        "sweetTheme",
+        document.body.classList.contains("dark")
+        ? "dark"
+        : "light"
+    );
+
+}
+
+
+/* =========================================================
+   BILL NUMBER
+========================================================= */
+
+function newInvoiceNumber(){
+
+    return "INV-" +
+        new Date().getFullYear() +
+        "-" +
+        String(
+            invoices.length + 1
+        ).padStart(4,"0");
+
+}
+
+
+/* =========================================================
+   LOAD BILL PRODUCTS
+========================================================= */
+
+function loadBillProducts(){
+
+    let select =
+        document.getElementById(
+            "billProduct"
+        );
+
+    select.innerHTML =
+        `<option value="">
+            Select Item
+        </option>`;
+
+
+    products.forEach(p=>{
+
+        select.innerHTML += `
+
+            <option value="${p.id}">
+
+                ${p.name}
+                -
+                ₹${Number(p.price).toFixed(2)}
+                |
+                Stock: ${p.stock}
+
+            </option>
+
+        `;
+
+    });
+
+}
+
+
+document
+    .getElementById("billProduct")
+    .addEventListener(
+        "change",
+        function(){
+
+            let p =
+                products.find(
+                    x=>x.id==this.value
+                );
+
+
+            document
+                .getElementById("billPrice")
+                .value =
+                p
+                ? "₹"+Number(p.price).toFixed(2)
+                : "";
+
+        }
+    );
+
+
+/* =========================================================
+   ADD BILL ITEM
+========================================================= */
+
+function addBillItem(){
+
+    let id =
+        Number(
+            document
+                .getElementById("billProduct")
+                .value
+        );
+
+
+    let qty =
+        Number(
+            document
+                .getElementById("billQty")
+                .value
+        );
+
+
+    let product =
+        products.find(
+            p=>p.id===id
+        );
+
+
+    if(!product){
+
+        alert(
+            "Please select an item."
+        );
+
+        return;
+
+    }
+
+
+    if(qty<=0){
+
+        alert(
+            "Enter a valid quantity."
+        );
+
+        return;
+
+    }
+
+
+    let existing =
+        currentItems.find(
+            item=>item.productId===id
+        );
+
+
+    let existingQty =
+        existing
+        ? Number(existing.qty)
+        : 0;
+
+
+    if(
+        existingQty + qty >
+        Number(product.stock)
+    ){
+
+        alert(
+            "Only " +
+            product.stock +
+            " items available."
+        );
+
+        return;
+
+    }
+
+
+    if(existing){
+
+        existing.qty += qty;
+
+        existing.amount =
+            existing.price *
+            existing.qty;
+
+    }else{
+
+        currentItems.push({
+
+            productId:product.id,
+
+            name:product.name,
+
+            price:Number(product.price),
+
+            qty:qty,
+
+            amount:
+                Number(product.price)*qty
+
+        });
+
+    }
+
+
+    renderBillItems();
+
+}
+
+
+/* =========================================================
+   VIEW BILL ITEM
+========================================================= */
+
+function viewBillItem(index){
+
+    let item =
+        currentItems[index];
+
+
+    if(!item){
+
+        alert(
+            "Item not found."
+        );
+
+        return;
+
+    }
+
+
+    document
+        .getElementById("modalContent")
+        .innerHTML = `
+
+            <h2>
+                🧾 Bill Item Details
+            </h2>
+
+            <div class="customer-info">
+
+                <p>
+                    <b>Item:</b>
+                    ${item.name}
+                </p>
+
+                <p>
+                    <b>Price:</b>
+                    ₹${Number(item.price).toFixed(2)}
+                </p>
+
+                <p>
+                    <b>Quantity:</b>
+                    ${item.qty}
+                </p>
+
+                <p>
+                    <b>Amount:</b>
+                    ₹${Number(item.amount).toFixed(2)}
+                </p>
+
+            </div>
+
+            <div class="actions">
+
+                <button
+                    class="btn-danger"
+                    onclick="
+                        removeBillItem(${index});
+                        closeModal();
+                    ">
+
+                    🗑 Delete Item
+
+                </button>
+
+                <button
+                    class="btn-gray"
+                    onclick="closeModal()">
+
+                    Close
+
+                </button>
+
+            </div>
+
+        `;
+
+
+    document
+        .getElementById("modal")
+        .style.display="block";
+
+}
+
+
+/* =========================================================
+   REMOVE BILL ITEM
+========================================================= */
+
+function removeBillItem(index){
+
+    if(
+        !confirm(
+            "Delete this item from the bill?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    currentItems.splice(
+        index,
+        1
+    );
+
+
+    renderBillItems();
+
+}
+
+
+/* =========================================================
+   RENDER BILL ITEMS
+========================================================= */
+
+function renderBillItems(){
+
+    let table =
+        document.getElementById(
+            "billItems"
+        );
+
+
+    table.innerHTML="";
+
+
+    if(currentItems.length===0){
+
+        table.innerHTML=`
+
+            <tr>
+
+                <td
+                    colspan="6"
+                    class="empty">
+
+                    No items added to this bill.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        calculateBill();
+
+        return;
+
+    }
+
+
+    currentItems.forEach(
+        (item,index)=>{
+
+            table.innerHTML += `
+
+                <tr>
+
+                    <td>
+                        ${index+1}
+                    </td>
+
+                    <td>
+                        ${item.name}
+                    </td>
+
+                    <td>
+                        ₹${Number(item.price)
+                            .toFixed(2)}
+                    </td>
+
+                    <td>
+                        ${item.qty}
+                    </td>
+
+                    <td>
+                        ₹${Number(item.amount)
+                            .toFixed(2)}
+                    </td>
+
+                    <td>
+
+                        <div class="actions">
+
+                            <button
+                                class="btn-blue"
+                                onclick="
+                                    viewBillItem(${index})
+                                ">
+
+                                👁 View
+
+                            </button>
+
+                            <button
+                                class="btn-danger"
+                                onclick="
+                                    removeBillItem(${index})
+                                ">
+
+                                🗑 Delete
+
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+    );
+
+
+    calculateBill();
+
+}
+
+
+/* =========================================================
+   CALCULATE BILL
+========================================================= */
+
+function calculateBill(){
+
+    let subtotal =
+        currentItems.reduce(
+            (sum,item)=>
+                sum+Number(item.amount),
+            0
+        );
+
+
+    let gstRate =
+        Number(
+            document
+                .getElementById("gstRate")
+                .value
+        ) || 0;
+
+
+    let gst =
+        subtotal * gstRate / 100;
+
+
+    let discount =
+        Number(
+            document
+                .getElementById("discount")
+                .value
+        ) || 0;
+
+
+    let total =
+        subtotal + gst - discount;
+
+
+    if(total<0){
+        total=0;
+    }
+
+
+    let paid =
+        Number(
+            document
+                .getElementById("paidAmount")
+                .value
+        ) || 0;
+
+
+    let balance =
+        paid-total;
+
+
+    document
+        .getElementById("billSubtotal")
+        .innerText =
+        subtotal.toFixed(2);
+
+
+    document
+        .getElementById("billGST")
+        .innerText =
+        gst.toFixed(2);
+
+
+    document
+        .getElementById("billTotal")
+        .innerText =
+        total.toFixed(2);
+
+
+    document
+        .getElementById("balance")
+        .innerText =
+        balance.toFixed(2);
+
+
+    return {
+        subtotal,
+        gst,
+        discount,
+        total,
+        paid,
+        balance
+    };
+
+}
+
+
+/* =========================================================
+   SAVE BILL
+========================================================= */
+
+function saveInvoice(){
+
+    let customer =
+        document
+            .getElementById("billCustomer")
+            .value
+            .trim();
+
+
+    let phone =
+        document
+            .getElementById("billPhone")
+            .value
+            .trim();
+
+
+    if(!customer){
+
+        alert(
+            "Enter customer name."
+        );
+
+        return;
+
+    }
+
+
+    if(currentItems.length===0){
+
+        alert(
+            "Add at least one item."
+        );
+
+        return;
+
+    }
+
+
+    let calc =
+        calculateBill();
+
+
+    let invoiceNo =
+        document
+            .getElementById("invoiceNo")
+            .value;
+
+
+    let existingIndex =
+        invoices.findIndex(
+            x=>x.invoice===invoiceNo
+        );
+
+
+    /*
+       Restore old stock when editing.
+    */
+
+    if(existingIndex>=0){
+
+        let old =
+            invoices[existingIndex];
+
+
+        old.items.forEach(item=>{
+
+            let p =
+                products.find(
+                    x=>x.id===item.productId
+                );
+
+
+            if(p){
+
+                p.stock +=
+                    Number(item.qty);
+
+            }
+
+        });
+
+    }
+
+
+    /*
+       Validate new stock.
+    */
+
+    for(let item of currentItems){
+
+        let p =
+            products.find(
+                x=>x.id===item.productId
+            );
+
+
+        if(!p){
+
+            alert(
+                "Item " +
+                item.name +
+                " no longer exists."
+            );
+
+            return;
+
+        }
+
+
+        if(
+            Number(item.qty) >
+            Number(p.stock)
+        ){
+
+            alert(
+                "Not enough stock for " +
+                item.name
+            );
+
+
+            if(existingIndex>=0){
+
+                invoices[existingIndex]
+                    .items
+                    .forEach(oldItem=>{
+
+                        let oldProduct =
+                            products.find(
+                                x=>
+                                x.id===
+                                oldItem.productId
+                            );
+
+
+                        if(oldProduct){
+
+                            oldProduct.stock -=
+                                Number(
+                                    oldItem.qty
+                                );
+
+                        }
+
+                    });
+
+            }
+
+            return;
+
+        }
+
+    }
+
+
+    /*
+       Reduce stock.
+    */
+
+    currentItems.forEach(item=>{
+
+        let p =
+            products.find(
+                x=>x.id===item.productId
+            );
+
+
+        if(p){
+
+            p.stock -=
+                Number(item.qty);
+
+        }
+
+    });
+
+
+    let data={
+
+        invoice:invoiceNo,
+
+        date:
+            document
+                .getElementById("invoiceDate")
+                .value,
+
+        customer:customer,
+
+        phone:phone,
+
+        items:
+            JSON.parse(
+                JSON.stringify(
+                    currentItems
+                )
+            ),
+
+        subtotal:calc.subtotal,
+
+        gst:calc.gst,
+
+        discount:calc.discount,
+
+        total:calc.total,
+
+        paid:calc.paid,
+
+        balance:calc.balance,
+
+        payment:
+            document
+                .getElementById(
+                    "paymentMethod"
+                )
+                .value
+
+    };
+
+
+    if(existingIndex>=0){
+
+        invoices[existingIndex]=data;
+
+        alert(
+            "Bill updated successfully."
+        );
+
+    }else{
+
+        invoices.push(data);
+
+        alert(
+            "Bill saved successfully."
+        );
+
+    }
+
+
+    saveCustomerFromInvoice(
+        customer,
+        phone
+    );
+
+
+    saveDatabase();
+
+    newInvoice();
+
+    refreshAll();
+
+}
+
+
+/* =========================================================
+   CUSTOMER FROM BILL
+========================================================= */
+
+function saveCustomerFromInvoice(
+    name,
+    phone
+){
+
+    let existing =
+        customers.find(
+            c=>
+                phone &&
+                c.phone===phone
+        );
+
+
+    if(!existing){
+
+        existing =
+            customers.find(
+                c=>
+                    c.name.toLowerCase()
+                    ===
+                    name.toLowerCase()
+            );
+
+    }
+
+
+    if(existing){
+
+        existing.name=name;
+
+        if(phone){
+            existing.phone=phone;
+        }
+
+    }else{
+
+        customers.push({
+
+            id:Date.now(),
+
+            name:name,
+
+            phone:phone
+
+        });
+
+    }
+
+}
+
+
+/* =========================================================
+   NEW BILL
+========================================================= */
+
+function newInvoice(){
+
+    currentItems=[];
+
+
+    document
+        .getElementById("invoiceNo")
+        .value =
+        newInvoiceNumber();
+
+
+    document
+        .getElementById("invoiceDate")
+        .value =
+        new Date()
+        .toISOString()
+        .split("T")[0];
+
+
+    document
+        .getElementById("billCustomer")
+        .value="";
+
+
+    document
+        .getElementById("billPhone")
+        .value="";
+
+
+    document
+        .getElementById("billQty")
+        .value=1;
+
+
+    document
+        .getElementById("billPrice")
+        .value="";
+
+
+    document
+        .getElementById("discount")
+        .value=0;
+
+
+    document
+        .getElementById("paidAmount")
+        .value=0;
+
+
+    document
+        .getElementById("paymentMethod")
+        .value="Cash";
+
+
+    renderBillItems();
+
+}
+
+
+/* =========================================================
+   PRODUCT CRUD
+========================================================= */
+
+function saveProduct(){
+
+    let name =
+        document
+            .getElementById("productName")
+            .value
+            .trim();
+
+
+    let price =
+        Number(
+            document
+                .getElementById("productPrice")
+                .value
+        );
+
+
+    let stock =
+        Number(
+            document
+                .getElementById("productStock")
+                .value
+        );
+
+
+    if(
+        !name ||
+        price<0 ||
+        stock<0
+    ){
+
+        alert(
+            "Enter valid item details."
+        );
+
+        return;
+
+    }
+
+
+    if(editingProduct){
+
+        let p =
+            products.find(
+                x=>x.id===editingProduct
+            );
+
+
+        if(p){
+
+            p.name=name;
+            p.price=price;
+            p.stock=stock;
+
+        }
+
+
+        editingProduct=null;
+
+
+        alert(
+            "Item updated successfully."
+        );
+
+    }else{
+
+        products.push({
+
+            id:Date.now(),
+
+            name:name,
+
+            price:price,
+
+            stock:stock
+
+        });
+
+
+        alert(
+            "Item added successfully."
+        );
+
+    }
+
+
+    saveDatabase();
+
+    clearProductForm();
+
+    refreshAll();
+
+}
+
+
+/* =========================================================
+   VIEW PRODUCT
+========================================================= */
+
+function viewProduct(id){
+
+    let p =
+        products.find(
+            x=>x.id===id
+        );
+
+
+    if(!p){
+
+        alert(
+            "Item not found."
+        );
+
+        return;
+
+    }
+
+
+    let status;
+
+
+    if(p.stock<=0){
+
+        status =
+            `<span class="badge red">
+                Out of Stock
+             </span>`;
+
+    }else if(p.stock<=5){
+
+        status =
+            `<span class="badge orange">
+                Low Stock
+             </span>`;
+
+    }else{
+
+        status =
+            `<span class="badge green">
+                Available
+             </span>`;
+
+    }
+
+
+    document
+        .getElementById("modalContent")
+        .innerHTML = `
+
+            <h2>
+                📦 Item Details
+            </h2>
+
+            <div class="customer-info">
+
+                <p>
+                    <b>Item ID:</b>
+                    ${p.id}
+                </p>
+
+                <p>
+                    <b>Item Name:</b>
+                    ${p.name}
+                </p>
+
+                <p>
+                    <b>Price:</b>
+                    ₹${Number(p.price).toFixed(2)}
+                </p>
+
+                <p>
+                    <b>Stock:</b>
+                    ${p.stock}
+                </p>
+
+                <p>
+                    <b>Status:</b>
+                    ${status}
+                </p>
+
+            </div>
+
+            <div class="actions">
+
+                <button
+                    class="btn-primary"
+                    onclick="
+                        addProductToBill(${p.id});
+                        closeModal();
+                    ">
+
+                    ➕ Add to Bill
+
+                </button>
+
+                <button
+                    class="btn-warning"
+                    onclick="
+                        editProduct(${p.id});
+                        closeModal();
+                    ">
+
+                    ✏ Update
+
+                </button>
+
+                <button
+                    class="btn-danger"
+                    onclick="
+                        deleteProduct(${p.id});
+                        closeModal();
+                    ">
+
+                    🗑 Delete
+
+                </button>
+
+                <button
+                    class="btn-gray"
+                    onclick="closeModal()">
+
+                    Close
+
+                </button>
+
+            </div>
+
+        `;
+
+
+    document
+        .getElementById("modal")
+        .style.display="block";
+
+}
+
+
+/* =========================================================
+   ADD PRODUCT DIRECTLY TO BILL
+========================================================= */
+
+function addProductToBill(id){
+
+    let product =
+        products.find(
+            p=>p.id===id
+        );
+
+
+    if(!product){
+
+        alert(
+            "Item not found."
+        );
+
+        return;
+
+    }
+
+
+    if(product.stock<=0){
+
+        alert(
+            "This item is out of stock."
+        );
+
+        return;
+
+    }
+
+
+    let existing =
+        currentItems.find(
+            item=>
+                item.productId===id
+        );
+
+
+    if(existing){
+
+        if(
+            existing.qty + 1 >
+            product.stock
+        ){
+
+            alert(
+                "Only " +
+                product.stock +
+                " items available."
+            );
+
+            return;
+
+        }
+
+
+        existing.qty++;
+
+        existing.amount =
+            existing.price *
+            existing.qty;
+
+    }else{
+
+        currentItems.push({
+
+            productId:product.id,
+
+            name:product.name,
+
+            price:Number(product.price),
+
+            qty:1,
+
+            amount:Number(product.price)
+
+        });
+
+    }
+
+
+    renderBillItems();
+
+
+    let billingButton =
+        document.querySelectorAll(
+            ".sidebar button"
+        )[1];
+
+
+    showPage(
+        "billing",
+        billingButton
+    );
+
+}
+
+
+/* =========================================================
+   EDIT PRODUCT
+========================================================= */
+
+function editProduct(id){
+
+    let p =
+        products.find(
+            x=>x.id===id
+        );
+
+
+    if(!p)return;
+
+
+    document
+        .getElementById("productName")
+        .value=p.name;
+
+
+    document
+        .getElementById("productPrice")
+        .value=p.price;
+
+
+    document
+        .getElementById("productStock")
+        .value=p.stock;
+
+
+    editingProduct=id;
+
+
+    let productsButton =
+        document.querySelectorAll(
+            ".sidebar button"
+        )[2];
+
+
+    showPage(
+        "products",
+        productsButton
+    );
+
+}
+
+
+/* =========================================================
+   DELETE PRODUCT
+========================================================= */
+
+function deleteProduct(id){
+
+    let p =
+        products.find(
+            x=>x.id===id
+        );
+
+
+    if(!p)return;
+
+
+    if(
+        !confirm(
+            "Delete item " +
+            p.name +
+            "?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    products =
+        products.filter(
+            x=>x.id!==id
+        );
+
+
+    saveDatabase();
+
+    refreshAll();
+
+
+    alert(
+        "Item deleted successfully."
+    );
+
+}
+
+
+/* =========================================================
+   CLEAR PRODUCT FORM
+========================================================= */
+
+function clearProductForm(){
+
+    document
+        .getElementById("productName")
+        .value="";
+
+
+    document
+        .getElementById("productPrice")
+        .value="";
+
+
+    document
+        .getElementById("productStock")
+        .value="";
+
+
+    editingProduct=null;
+
+}
+
+
+/* =========================================================
+   PRODUCT TABLE
+========================================================= */
+
+function renderProducts(){
+
+    let table =
+        document.getElementById(
+            "productTable"
+        );
+
+
+    let search =
+        document
+            .getElementById("productSearch")
+            .value
+            .toLowerCase();
+
+
+    table.innerHTML="";
+
+
+    let list =
+        products.filter(
+            p=>
+                p.name
+                .toLowerCase()
+                .includes(search)
+        );
+
+
+    if(list.length===0){
+
+        table.innerHTML=`
+
+            <tr>
+
+                <td
+                    colspan="6"
+                    class="empty">
+
+                    No items found.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    list.forEach(p=>{
+
+        let status;
+
+
+        if(p.stock<=0){
+
+            status =
+                `<span class="badge red">
+                    Out of Stock
+                 </span>`;
+
+        }else if(p.stock<=5){
+
+            status =
+                `<span class="badge orange">
+                    Low Stock
+                 </span>`;
+
+        }else{
+
+            status =
+                `<span class="badge green">
+                    Available
+                 </span>`;
+
+        }
+
+
+        table.innerHTML += `
+
+            <tr>
+
+                <td>
+                    ${p.id}
+                </td>
+
+                <td>
+                    <b>${p.name}</b>
+                </td>
+
+                <td>
+                    ₹${Number(p.price).toFixed(2)}
+                </td>
+
+                <td
+                    class="${
+                        p.stock<=5
+                        ? "low-stock"
+                        : ""
+                    }">
+
+                    ${p.stock}
+
+                </td>
+
+                <td>
+                    ${status}
+                </td>
+
+                <td>
+
+                    <div class="actions">
+
+                        <button
+                            class="btn-blue"
+                            onclick="
+                                viewProduct(${p.id})
+                            ">
+
+                            👁 View
+
+                        </button>
+
+                        <button
+                            class="btn-warning"
+                            onclick="
+                                editProduct(${p.id})
+                            ">
+
+                            ✏ Update
+
+                        </button>
+
+                        <button
+                            class="btn-danger"
+                            onclick="
+                                deleteProduct(${p.id})
+                            ">
+
+                            🗑 Delete
+
+                        </button>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+        `;
+
+    });
+
+}
+
+
+/* =========================================================
+   CUSTOMER FUNCTIONS
+========================================================= */
+
+function saveCustomer(){
+
+    let name =
+        document
+            .getElementById("customerName")
+            .value
+            .trim();
+
+
+    let phone =
+        document
+            .getElementById("customerPhone")
+            .value
+            .trim();
+
+
+    if(!name){
+
+        alert(
+            "Enter customer name."
+        );
+
+        return;
+
+    }
+
+
+    if(editingCustomer){
+
+        let c =
+            customers.find(
+                x=>x.id===editingCustomer
+            );
+
+
+        if(c){
+
+            c.name=name;
+            c.phone=phone;
+
+        }
+
+
+        editingCustomer=null;
+
+    }else{
+
+        customers.push({
+
+            id:Date.now(),
+
+            name:name,
+
+            phone:phone
+
+        });
+
+    }
+
+
+    saveDatabase();
+
+    clearCustomerForm();
+
+    refreshAll();
+
+}
+
+
+function clearCustomerForm(){
+
+    document
+        .getElementById("customerName")
+        .value="";
+
+
+    document
+        .getElementById("customerPhone")
+        .value="";
+
+
+    editingCustomer=null;
+
+}
+
+
+function editCustomer(id){
+
+    let c =
+        customers.find(
+            x=>x.id===id
+        );
+
+
+    if(!c)return;
+
+
+    document
+        .getElementById("customerName")
+        .value=c.name;
+
+
+    document
+        .getElementById("customerPhone")
+        .value=c.phone;
+
+
+    editingCustomer=id;
+
+}
+
+
+function deleteCustomer(id){
+
+    if(
+        !confirm(
+            "Delete this customer?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    customers =
+        customers.filter(
+            x=>x.id!==id
+        );
+
+
+    saveDatabase();
+
+    refreshAll();
+
+}
+
+
+function renderCustomers(){
+
+    let table =
+        document.getElementById(
+            "customerTable"
+        );
+
+
+    let search =
+        document
+            .getElementById("customerSearch")
+            .value
+            .toLowerCase();
+
+
+    table.innerHTML="";
+
+
+    customers
+        .filter(c=>
+
+            c.name
+                .toLowerCase()
+                .includes(search)
+
+            ||
+
+            String(c.phone)
+                .toLowerCase()
+                .includes(search)
+
+        )
+        .forEach(c=>{
+
+            let list =
+                invoices.filter(
+                    x=>
+                        c.phone &&
+                        x.phone
+                        ?
+                        x.phone===c.phone
+                        :
+                        x.customer
+                        .toLowerCase()
+                        ===
+                        c.name.toLowerCase()
+                );
+
+
+            let total =
+                list.reduce(
+                    (s,x)=>
+                        s+Number(x.total),
+                    0
+                );
+
+
+            let last =
+                list.length
+                ?
+                list
+                    .slice()
+                    .sort(
+                        (a,b)=>
+                            b.date
+                            .localeCompare(
+                                a.date
+                            )
+                    )[0].date
+                :
+                "-";
+
+
+            table.innerHTML += `
+
+                <tr>
+
+                    <td>
+                        <b>${c.name}</b>
+                    </td>
+
+                    <td>
+                        ${c.phone || "-"}
+                    </td>
+
+                    <td>
+                        ${list.length}
+                    </td>
+
+                    <td>
+                        ₹${total.toFixed(2)}
+                    </td>
+
+                    <td>
+                        ${last}
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn-warning"
+                            onclick="
+                                editCustomer(${c.id})
+                            ">
+
+                            ✏ Update
+
+                        </button>
+
+                        <button
+                            class="btn-danger"
+                            onclick="
+                                deleteCustomer(${c.id})
+                            ">
+
+                            🗑 Delete
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        });
+
+}
+
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+function updateDashboard(){
+
+    let sales =
+        invoices.reduce(
+            (s,x)=>
+                s+Number(x.total),
+            0
+        );
+
+
+    let today =
+        new Date()
+            .toISOString()
+            .split("T")[0];
+
+
+    let todayInvoices =
+        invoices.filter(
+            x=>x.date===today
+        );
+
+
+    let todaySales =
+        todayInvoices.reduce(
+            (s,x)=>
+                s+Number(x.total),
+            0
+        );
+
+
+    let cash =
+        invoices.reduce(
+            (s,x)=>
+                s+Number(x.paid),
+            0
+        );
+
+
+    let pending =
+        invoices.reduce(
+            (s,x)=>
+                s+
+                Math.max(
+                    0,
+                    Number(x.total) -
+                    Number(x.paid)
+                ),
+            0
+        );
+
+
+    document
+        .getElementById("dashSales")
+        .innerText =
+        "₹"+sales.toFixed(2);
+
+
+    document
+        .getElementById("dashInvoices")
+        .innerText =
+        invoices.length;
+
+
+    document
+        .getElementById("dashProducts")
+        .innerText =
+        products.length;
+
+
+    document
+        .getElementById("dashCustomers")
+        .innerText =
+        customers.length;
+
+
+    document
+        .getElementById("todaySales")
+        .innerText =
+        "₹"+todaySales.toFixed(2);
+
+
+    document
+        .getElementById("todayBills")
+        .innerText =
+        todayInvoices.length;
+
+
+    document
+        .getElementById("cashReceived")
+        .innerText =
+        "₹"+cash.toFixed(2);
+
+
+    document
+        .getElementById("pendingBalance")
+        .innerText =
+        "₹"+pending.toFixed(2);
+
+
+    let recent =
+        document.getElementById(
+            "recentInvoices"
+        );
+
+
+    recent.innerHTML="";
+
+
+    invoices
+        .slice()
+        .reverse()
+        .slice(0,5)
+        .forEach(x=>{
+
+            recent.innerHTML += `
+
+                <tr>
+
+                    <td>
+                        ${x.invoice}
+                    </td>
+
+                    <td>
+                        ${x.customer}
+                    </td>
+
+                    <td>
+                        ${x.date}
+                    </td>
+
+                    <td>
+                        ₹${Number(x.total)
+                            .toFixed(2)}
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn-blue"
+                            onclick="
+                                viewInvoice(
+                                    '${x.invoice}'
+                                )
+                            ">
+
+                            👁 View
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        });
+
+}
+
+
+/* =========================================================
+   VIEW SAVED BILL
+========================================================= */
+
+function viewInvoice(invoice){
+
+    let x =
+        invoices.find(
+            i=>i.invoice===invoice
+        );
+
+
+    if(!x)return;
+
+
+    let rows="";
+
+
+    x.items.forEach(
+        (item,i)=>{
+
+            rows += `
+
+                <tr>
+
+                    <td>
+                        ${i+1}
+                    </td>
+
+                    <td>
+                        ${item.name}
+                    </td>
+
+                    <td>
+                        ₹${Number(item.price)
+                            .toFixed(2)}
+                    </td>
+
+                    <td>
+                        ${item.qty}
+                    </td>
+
+                    <td>
+                        ₹${Number(item.amount)
+                            .toFixed(2)}
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+    );
+
+
+    let pending =
+        Math.max(
+            0,
+            Number(x.total) -
+            Number(x.paid)
+        );
+
+
+    document
+        .getElementById("modalContent")
+        .innerHTML = `
+
+            <div class="invoice-head">
+
+                <h1>
+                    🍰 Sweet Oven Bakery
+                </h1>
+
+                <h2>
+                    Customer Bill
+                </h2>
+
+            </div>
+
+            <div class="customer-info">
+
+                <p>
+                    <b>Bill:</b>
+                    ${x.invoice}
+                </p>
+
+                <p>
+                    <b>Date:</b>
+                    ${x.date}
+                </p>
+
+                <p>
+                    <b>Customer:</b>
+                    ${x.customer}
+                </p>
+
+                <p>
+                    <b>Phone:</b>
+                    ${x.phone || "-"}
+                </p>
+
+            </div>
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>#</th>
+                            <th>Item</th>
+                            <th>Price</th>
+                            <th>Qty</th>
+                            <th>Amount</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        ${rows}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <br>
+
+            <div class="summary-row">
+
+                <span>
+                    Subtotal
+                </span>
+
+                <b>
+                    ₹${Number(x.subtotal)
+                        .toFixed(2)}
+                </b>
+
+            </div>
+
+            <div class="summary-row">
+
+                <span>
+                    GST
+                </span>
+
+                <b>
+                    ₹${Number(x.gst)
+                        .toFixed(2)}
+                </b>
+
+            </div>
+
+            <div class="summary-row">
+
+                <span>
+                    Discount
+                </span>
+
+                <b>
+                    ₹${Number(x.discount)
+                        .toFixed(2)}
+                </b>
+
+            </div>
+
+            <div class="summary-row grand">
+
+                <span>
+                    Grand Total
+                </span>
+
+                <b>
+                    ₹${Number(x.total)
+                        .toFixed(2)}
+                </b>
+
+            </div>
+
+            <div class="summary-row">
+
+                <span>
+                    Paid
+                </span>
+
+                <b>
+                    ₹${Number(x.paid)
+                        .toFixed(2)}
+                </b>
+
+            </div>
+
+            <div class="summary-row">
+
+                <span>
+                    Balance
+                </span>
+
+                <b>
+                    ₹${pending.toFixed(2)}
+                </b>
+
+            </div>
+
+            <br>
+
+            <div class="actions">
+
+                <button
+                    class="btn-blue"
+                    onclick="
+                        printSavedInvoice(
+                            '${x.invoice}'
+                        )
+                    ">
+
+                    🖨 Print
+
+                </button>
+
+                <button
+                    class="btn-warning"
+                    onclick="
+                        editInvoice(
+                            '${x.invoice}'
+                        );
+                        closeModal();
+                    ">
+
+                    ✏ Update
+
+                </button>
+
+                <button
+                    class="btn-danger"
+                    onclick="
+                        deleteInvoice(
+                            '${x.invoice}'
+                        );
+                        closeModal();
+                    ">
+
+                    🗑 Delete
+
+                </button>
+
+            </div>
+
+        `;
+
+
+    document
+        .getElementById("modal")
+        .style.display="block";
+
+}
+
+
+/* =========================================================
+   EDIT BILL
+========================================================= */
+
+function editInvoice(invoice){
+
+    let x =
+        invoices.find(
+            i=>i.invoice===invoice
+        );
+
+
+    if(!x)return;
+
+
+    document
+        .getElementById("invoiceNo")
+        .value=x.invoice;
+
+
+    document
+        .getElementById("invoiceDate")
+        .value=x.date;
+
+
+    document
+        .getElementById("billCustomer")
+        .value=x.customer;
+
+
+    document
+        .getElementById("billPhone")
+        .value=x.phone;
+
+
+    currentItems =
+        JSON.parse(
+            JSON.stringify(
+                x.items
+            )
+        );
+
+
+    document
+        .getElementById("gstRate")
+        .value =
+            x.subtotal
+            ? (
+                Number(x.gst) /
+                Number(x.subtotal) *
+                100
+              ).toFixed(2)
+            : 5;
+
+
+    document
+        .getElementById("discount")
+        .value=x.discount;
+
+
+    document
+        .getElementById("paidAmount")
+        .value=x.paid;
+
+
+    document
+        .getElementById("paymentMethod")
+        .value=x.payment;
+
+
+    renderBillItems();
+
+
+    let billingButton =
+        document.querySelectorAll(
+            ".sidebar button"
+        )[1];
+
+
+    showPage(
+        "billing",
+        billingButton
+    );
+
+}
+
+
+/* =========================================================
+   DELETE BILL
+========================================================= */
+
+function deleteInvoice(invoice){
+
+    let index =
+        invoices.findIndex(
+            x=>x.invoice===invoice
+        );
+
+
+    if(index<0)return;
+
+
+    let x =
+        invoices[index];
+
+
+    if(
+        !confirm(
+            "Delete bill " +
+            x.invoice +
+            "?\n\n" +
+            "Stock will be restored."
+        )
+    ){
+
+        return;
+
+    }
+
+
+    x.items.forEach(item=>{
+
+        let p =
+            products.find(
+                x=>x.id===item.productId
+            );
+
+
+        if(p){
+
+            p.stock +=
+                Number(item.qty);
+
+        }
+
+    });
+
+
+    invoices.splice(
+        index,
+        1
+    );
+
+
+    saveDatabase();
+
+    refreshAll();
+
+
+    alert(
+        "Bill deleted successfully."
+    );
+
+}
+
+
+/* =========================================================
+   PRINT CURRENT BILL
+========================================================= */
+
+function printCurrentInvoice(){
+
+    if(currentItems.length===0){
+
+        alert(
+            "Add items first."
+        );
+
+        return;
+
+    }
+
+
+    window.print();
+
+}
+
+
+/* =========================================================
+   PRINT SAVED BILL
+========================================================= */
+
+function printSavedInvoice(invoice){
+
+    let x =
+        invoices.find(
+            i=>i.invoice===invoice
+        );
+
+
+    if(!x)return;
+
+
+    let rows="";
+
+
+    x.items.forEach(
+        (item,i)=>{
+
+            rows += `
+
+                <tr>
+
+                    <td>
+                        ${i+1}
+                    </td>
+
+                    <td>
+                        ${item.name}
+                    </td>
+
+                    <td>
+                        ₹${Number(item.price)
+                            .toFixed(2)}
+                    </td>
+
+                    <td>
+                        ${item.qty}
+                    </td>
+
+                    <td>
+                        ₹${Number(item.amount)
+                            .toFixed(2)}
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+    );
+
+
+    let pending =
+        Math.max(
+            0,
+            Number(x.total) -
+            Number(x.paid)
+        );
+
+
+    let w =
+        window.open(
+            "",
+            "_blank"
+        );
+
+
+    w.document.write(`
+
+        <!DOCTYPE html>
+
+        <html>
+
+        <head>
+
+            <title>
+                ${x.invoice}
+            </title>
+
+            <style>
+
+                body{
+                    font-family:Arial;
+                    padding:30px;
+                    color:#222;
+                }
+
+                h1,
+                h2{
+                    text-align:center;
+                }
+
+                table{
+                    width:100%;
+                    border-collapse:collapse;
+                }
+
+                th,
+                td{
+                    border:1px solid #ccc;
+                    padding:10px;
+                    text-align:center;
+                }
+
+                th{
+                    background:#8e3b63;
+                    color:white;
+                }
+
+                .summary{
+                    width:350px;
+                    margin-left:auto;
+                    margin-top:20px;
+                }
+
+                .row{
+                    display:flex;
+                    justify-content:space-between;
+                    padding:8px;
+                    border-bottom:1px solid #ddd;
+                }
+
+                .total{
+                    font-size:20px;
+                    font-weight:bold;
+                    color:#8e3b63;
+                }
+
+            </style>
+
+        </head>
+
+        <body>
+
+            <h1>
+                🍰 Sweet Oven Bakery
+            </h1>
+
+            <h2>
+                Customer Bill
+            </h2>
+
+            <p>
+                <b>Bill:</b>
+                ${x.invoice}
+            </p>
+
+            <p>
+                <b>Date:</b>
+                ${x.date}
+            </p>
+
+            <p>
+                <b>Customer:</b>
+                ${x.customer}
+            </p>
+
+            <p>
+                <b>Phone:</b>
+                ${x.phone || "-"}
+            </p>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>#</th>
+                        <th>Item</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Amount</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    ${rows}
+
+                </tbody>
+
+            </table>
+
+            <div class="summary">
+
+                <div class="row">
+
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <span>
+                        ₹${Number(x.subtotal)
+                            .toFixed(2)}
+                    </span>
+
+                </div>
+
+                <div class="row">
+
+                    <span>
+                        GST
+                    </span>
+
+                    <span>
+                        ₹${Number(x.gst)
+                            .toFixed(2)}
+                    </span>
+
+                </div>
+
+                <div class="row">
+
+                    <span>
+                        Discount
+                    </span>
+
+                    <span>
+                        ₹${Number(x.discount)
+                            .toFixed(2)}
+                    </span>
+
+                </div>
+
+                <div class="row total">
+
+                    <span>
+                        Grand Total
+                    </span>
+
+                    <span>
+                        ₹${Number(x.total)
+                            .toFixed(2)}
+                    </span>
+
+                </div>
+
+                <div class="row">
+
+                    <span>
+                        Paid
+                    </span>
+
+                    <span>
+                        ₹${Number(x.paid)
+                            .toFixed(2)}
+                    </span>
+
+                </div>
+
+                <div class="row">
+
+                    <span>
+                        Balance
+                    </span>
+
+                    <span>
+                        ₹${pending.toFixed(2)}
+                    </span>
+
+                </div>
+
+            </div>
+
+            <br>
+
+            <p style="text-align:center">
+
+                Thank you for visiting
+                Sweet Oven Bakery! 🍰
+
+            </p>
+
+        </body>
+
+        </html>
+
+    `);
+
+
+    w.document.close();
+
+
+    setTimeout(
+        ()=>{
+            w.print();
+        },
+        300
+    );
+
+}
+
+
+/* =========================================================
+   BACKUP
+========================================================= */
+
+function exportData(){
+
+    let data={
+
+        products,
+
+        invoices,
+
+        customers,
+
+        exportedAt:
+            new Date().toISOString()
+
+    };
+
+
+    let blob =
+        new Blob(
+            [
+                JSON.stringify(
+                    data,
+                    null,
+                    2
+                )
+            ],
+            {
+                type:"application/json"
+            }
+        );
+
+
+    let url =
+        URL.createObjectURL(blob);
+
+
+    let a =
+        document.createElement("a");
+
+
+    a.href=url;
+
+    a.download=
+        "sweet-oven-backup.json";
+
+
+    document
+        .body
+        .appendChild(a);
+
+
+    a.click();
+
+    a.remove();
+
+
+    URL.revokeObjectURL(url);
+
+}
+
+
+/* =========================================================
+   IMPORT
+========================================================= */
+
+function importData(){
+
+    let file =
+        document
+            .getElementById("importFile")
+            .files[0];
+
+
+    if(!file){
+
+        alert(
+            "Select a backup file."
+        );
+
+        return;
+
+    }
+
+
+    let reader =
+        new FileReader();
+
+
+    reader.onload=function(e){
+
+        try{
+
+            let data =
+                JSON.parse(
+                    e.target.result
+                );
+
+
+            if(
+                !data.products ||
+                !data.invoices
+            ){
+
+                throw new Error();
+
+            }
+
+
+            products=data.products;
+
+            invoices=data.invoices;
+
+            customers=
+                data.customers || [];
+
+
+            saveDatabase();
+
+            refreshAll();
+
+
+            alert(
+                "Backup restored successfully."
+            );
+
+        }catch(error){
+
+            alert(
+                "Invalid backup file."
+            );
+
+        }
+
+    };
+
+
+    reader.readAsText(file);
+
+}
+
+
+/* =========================================================
+   DELETE ALL DATA
+========================================================= */
+
+function clearAllData(){
+
+    if(
+        !confirm(
+            "WARNING!\n\n" +
+            "Delete ALL data?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    if(
+        !confirm(
+            "This cannot be undone.\n\nContinue?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    localStorage.removeItem(
+        "sweetProducts"
+    );
+
+    localStorage.removeItem(
+        "sweetInvoices"
+    );
+
+    localStorage.removeItem(
+        "sweetCustomers"
+    );
+
+
+    location.reload();
+
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+function closeModal(){
+
+    document
+        .getElementById("modal")
+        .style.display="none";
+
+}
+
+
+window.onclick=function(e){
+
+    if(
+        e.target===
+        document.getElementById("modal")
+    ){
+
+        closeModal();
+
+    }
+
+};
+
+
+/* =========================================================
+   REFRESH
+========================================================= */
+
+function refreshAll(){
+
+    loadBillProducts();
+
+    renderBillItems();
+
+    renderProducts();
+
+    renderCustomers();
+
+    updateDashboard();
+
+}
+
+
+/* =========================================================
+   INITIALIZATION
+========================================================= */
+
+if(
+    localStorage.getItem("sweetTheme")
+    ===
+    "dark"
+){
+
+    document.body.classList.add("dark");
+
+}
+
+
+document
+    .getElementById("invoiceNo")
+    .value =
+    newInvoiceNumber();
+
+
+document
+    .getElementById("invoiceDate")
+    .value =
+    new Date()
+    .toISOString()
+    .split("T")[0];
+
+
+loadBillProducts();
+
+renderBillItems();
+
+renderProducts();
+
+renderCustomers();
+
+updateDashboard();
+
+</script>
+
+</body>
+</html>
