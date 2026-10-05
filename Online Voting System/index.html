@@ -1,0 +1,509 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Online Voting System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #eef2ff;
+        }
+
+        header {
+            background: #2563eb;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 500px;
+            margin: 40px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px #0002;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2563eb;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 12px;
+            border: none;
+            border-radius: 7px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .logout {
+            background: #dc2626;
+        }
+
+        .logout:hover {
+            background: #b91c1c;
+        }
+
+        .candidate {
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .candidate:hover {
+            background: #eff6ff;
+        }
+
+        .message {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        .success {
+            color: green;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .result {
+            margin: 20px 0;
+        }
+
+        .bar {
+            background: #ddd;
+            height: 20px;
+            border-radius: 10px;
+            margin-top: 5px;
+        }
+
+        .fill {
+            background: #2563eb;
+            height: 20px;
+            border-radius: 10px;
+            width: 0%;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .user {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #475569;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🗳️ Online Voting System</h1>
+   
+</header>
+
+
+<!-- LOGIN PAGE -->
+
+<div id="loginPage" class="container">
+
+    <h2>Login</h2>
+
+    <input
+        type="text"
+        id="username"
+        placeholder="Enter Username">
+
+    <input
+        type="password"
+        id="password"
+        placeholder="Enter Password">
+
+    <button onclick="login()">
+        Login
+    </button>
+
+    <p id="loginMessage" class="message"></p>
+
+</div>
+
+
+<!-- VOTING PAGE -->
+
+<div id="votingPage" class="container hidden">
+
+    <h2>Cast Your Vote</h2>
+
+    <div class="user">
+        Welcome,
+        <strong id="displayUser"></strong>
+    </div>
+
+    <div class="candidate">
+        <label>
+            <input
+                type="radio"
+                name="candidate"
+                value="A">
+            Candidate A
+        </label>
+    </div>
+
+    <div class="candidate">
+        <label>
+            <input
+                type="radio"
+                name="candidate"
+                value="B">
+            Candidate B
+        </label>
+    </div>
+
+    <div class="candidate">
+        <label>
+            <input
+                type="radio"
+                name="candidate"
+                value="C">
+            Candidate C
+        </label>
+    </div>
+
+    <button onclick="submitVote()">
+        🗳️ Submit Vote
+    </button>
+
+    <p id="voteMessage" class="message"></p>
+
+    <button onclick="showResults()">
+        View Results
+    </button>
+
+    <button class="logout" onclick="logout()">
+        Logout
+    </button>
+
+</div>
+
+
+<!-- RESULTS PAGE -->
+
+<div id="resultsPage" class="container hidden">
+
+    <h2>📊 Voting Results</h2>
+
+    <div class="result">
+        <b>
+            Candidate A:
+            <span id="resultA">0</span>
+        </b>
+
+        <div class="bar">
+            <div id="barA" class="fill"></div>
+        </div>
+    </div>
+
+
+    <div class="result">
+        <b>
+            Candidate B:
+            <span id="resultB">0</span>
+        </b>
+
+        <div class="bar">
+            <div id="barB" class="fill"></div>
+        </div>
+    </div>
+
+
+    <div class="result">
+        <b>
+            Candidate C:
+            <span id="resultC">0</span>
+        </b>
+
+        <div class="bar">
+            <div id="barC" class="fill"></div>
+        </div>
+    </div>
+
+    <button onclick="backToVoting()">
+        Back to Voting
+    </button>
+
+    <button class="logout" onclick="logout()">
+        Logout
+    </button>
+
+</div>
+
+
+<script>
+
+/* -------------------------
+   LOGIN DETAILS
+-------------------------- */
+
+const validUsername = "student";
+const validPassword = "1234";
+
+
+/* -------------------------
+   VOTE DATA
+-------------------------- */
+
+let votes = {
+    A: 0,
+    B: 0,
+    C: 0
+};
+
+
+/* -------------------------
+   LOGIN
+-------------------------- */
+
+function login() {
+
+    let username =
+        document.getElementById("username").value;
+
+    let password =
+        document.getElementById("password").value;
+
+
+    if (
+        username === validUsername &&
+        password === validPassword
+    ) {
+
+        document
+            .getElementById("loginPage")
+            .classList.add("hidden");
+
+        document
+            .getElementById("votingPage")
+            .classList.remove("hidden");
+
+        document
+            .getElementById("displayUser")
+            .innerText = username;
+
+        document
+            .getElementById("loginMessage")
+            .innerText = "";
+
+    }
+
+    else {
+
+        document
+            .getElementById("loginMessage")
+            .innerText =
+            "❌ Invalid username or password.";
+
+        document
+            .getElementById("loginMessage")
+            .className =
+            "message error";
+    }
+}
+
+
+/* -------------------------
+   SUBMIT VOTE
+-------------------------- */
+
+function submitVote() {
+
+    let selected =
+        document.querySelector(
+            'input[name="candidate"]:checked'
+        );
+
+
+    if (!selected) {
+
+        document
+            .getElementById("voteMessage")
+            .innerText =
+            "Please select a candidate.";
+
+        document
+            .getElementById("voteMessage")
+            .className =
+            "message error";
+
+        return;
+    }
+
+
+    votes[selected.value]++;
+
+
+    document
+        .getElementById("voteMessage")
+        .innerText =
+        "✅ Your vote has been submitted successfully!";
+
+    document
+        .getElementById("voteMessage")
+        .className =
+        "message success";
+
+
+    selected.checked = false;
+}
+
+
+/* -------------------------
+   SHOW RESULTS
+-------------------------- */
+
+function showResults() {
+
+    document
+        .getElementById("votingPage")
+        .classList.add("hidden");
+
+    document
+        .getElementById("resultsPage")
+        .classList.remove("hidden");
+
+
+    updateResults();
+}
+
+
+/* -------------------------
+   UPDATE RESULTS
+-------------------------- */
+
+function updateResults() {
+
+    let total =
+        votes.A +
+        votes.B +
+        votes.C;
+
+
+    document
+        .getElementById("resultA")
+        .innerText = votes.A;
+
+    document
+        .getElementById("resultB")
+        .innerText = votes.B;
+
+    document
+        .getElementById("resultC")
+        .innerText = votes.C;
+
+
+    if (total > 0) {
+
+        document
+            .getElementById("barA")
+            .style.width =
+            (votes.A / total * 100) + "%";
+
+
+        document
+            .getElementById("barB")
+            .style.width =
+            (votes.B / total * 100) + "%";
+
+
+        document
+            .getElementById("barC")
+            .style.width =
+            (votes.C / total * 100) + "%";
+    }
+}
+
+
+/* -------------------------
+   BACK TO VOTING
+-------------------------- */
+
+function backToVoting() {
+
+    document
+        .getElementById("resultsPage")
+        .classList.add("hidden");
+
+    document
+        .getElementById("votingPage")
+        .classList.remove("hidden");
+}
+
+
+/* -------------------------
+   LOGOUT
+-------------------------- */
+
+function logout() {
+
+    document
+        .getElementById("votingPage")
+        .classList.add("hidden");
+
+    document
+        .getElementById("resultsPage")
+        .classList.add("hidden");
+
+    document
+        .getElementById("loginPage")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("username")
+        .value = "";
+
+    document
+        .getElementById("password")
+        .value = "";
+
+    document
+        .getElementById("loginMessage")
+        .innerText = "";
+
+    document
+        .getElementById("voteMessage")
+        .innerText = "";
+}
+
+</script>
+
+</body>
+</html>
