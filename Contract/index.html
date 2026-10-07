@@ -1,0 +1,270 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Construction Contract Agreement</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #fff;
+      color: #111;
+      font-family: "Times New Roman", Times, serif;
+    }
+
+    .page {
+      width: 780px;
+      min-height: 1020px;
+      margin: 28px auto;
+      padding: 78px 78px 70px;
+      border: 10px solid #129fe3;
+      background: #fff;
+    }
+
+    h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 43px;
+      line-height: 1.18;
+      font-weight: 700;
+      letter-spacing: -1px;
+    }
+
+    h1 span {
+      display: block;
+    }
+
+    .section {
+      margin-top: 23px;
+    }
+
+    .section-title {
+      margin: 0 0 13px;
+      font-size: 16px;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+
+    .text {
+      font-size: 15px;
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .bullet {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .dash {
+      font-size: 14px;
+      line-height: 1.45;
+      flex: 0 0 auto;
+    }
+
+    .party-text {
+      flex: 1;
+      text-align: justify;
+    }
+
+    .blank {
+      display: inline-block;
+      height: 15px;
+      border-bottom: 1px solid #555;
+      vertical-align: bottom;
+    }
+
+    .w1 { width: 180px; }
+    .w2 { width: 95px; }
+    .w3 { width: 145px; }
+    .w4 { width: 125px; }
+    .w5 { width: 115px; }
+    .w6 { width: 150px; }
+
+    .property-address {
+      margin-left: 25px;
+      margin-top: 14px;
+    }
+
+    .address-line {
+      height: 25px;
+      border-bottom: 1px solid #555;
+      margin-bottom: 0;
+    }
+
+    .scope-intro {
+      margin-bottom: 10px;
+    }
+
+    .work-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: work;
+    }
+
+    .work-list li {
+      counter-increment: work;
+      position: relative;
+      height: 33px;
+      padding-left: 24px;
+    }
+
+    .work-list li::before {
+      content: counter(work) ".";
+      position: absolute;
+      left: 0;
+      top: 2px;
+      font-size: 15px;
+    }
+
+    .work-line {
+      height: 25px;
+      border-bottom: 1px solid #555;
+      width: 100%;
+    }
+
+    .bottom-note {
+      margin-top: 7px;
+    }
+
+    @media (max-width: 820px) {
+      .page {
+        width: calc(100% - 30px);
+        padding: 55px 45px;
+      }
+
+      h1 {
+        font-size: 34px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page {
+        width: calc(100% - 16px);
+        margin: 8px auto;
+        border-width: 7px;
+        padding: 35px 25px;
+      }
+
+      h1 {
+        font-size: 27px;
+      }
+
+      .text {
+        font-size: 13px;
+      }
+    }
+
+    @media print {
+      body {
+        margin: 0;
+      }
+
+      .page {
+        width: 100%;
+        min-height: 100vh;
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="page">
+
+    <h1>
+      <span>CONSTRUCTION</span>
+      <span>CONTRACT AGREEMENT</span>
+    </h1>
+
+    <!-- PARTIES -->
+    <section class="section">
+      <h2 class="section-title">PARTIES</h2>
+
+      <div class="bullet">
+        <div class="dash">-</div>
+
+        <p class="text party-text">
+          This Construction Contract Agreement (hereinafter referred to as the
+          <strong>“Agreement”</strong>) is entered into on
+          <span class="blank w1"></span>
+          (the <strong>“Effective Date”</strong>), by and between
+          <span class="blank w2"></span>,
+          with an address of
+          <span class="blank w3"></span>
+          (hereinafter referred to as the
+          <strong>“Constructor”</strong>), and
+          <span class="blank w4"></span>,
+          with an address of
+          <span class="blank w5"></span>
+          (hereinafter referred to as the
+          <strong>“Client”</strong>) (collectively referred to as the
+          <strong>“Parties”</strong>).
+        </p>
+      </div>
+    </section>
+
+    <!-- CONSTRUCTION PROPERTY -->
+    <section class="section">
+      <h2 class="section-title">CONSTRUCTION PROPERTY</h2>
+
+      <div class="bullet">
+        <div class="dash">-</div>
+
+        <p class="text">
+          The Property that is to be constructed is located at the following address:
+        </p>
+      </div>
+
+      <div class="property-address">
+        <div class="address-line"></div>
+        <div class="address-line"></div>
+      </div>
+    </section>
+
+    <!-- SCOPE OF WORK -->
+    <section class="section">
+      <h2 class="section-title">SCOPE OF WORK</h2>
+
+      <p class="text scope-intro">
+        The Constructor agrees to perform the construction described below:
+      </p>
+
+      <ol class="work-list">
+        <li><div class="work-line"></div></li>
+        <li><div class="work-line"></div></li>
+        <li><div class="work-line"></div></li>
+        <li><div class="work-line"></div></li>
+        <li><div class="work-line"></div></li>
+        <li><div class="work-line"></div></li>
+        <li><div class="work-line"></div></li>
+        <li><div class="work-line"></div></li>
+        <li><div class="work-line"></div></li>
+        <li><div class="work-line"></div></li>
+      </ol>
+
+      <div class="bullet bottom-note">
+        <div class="dash">-</div>
+
+        <p class="text">
+          In addition to the aforementioned, the Constructor agrees to abide by and
+          perform all the work that is shown on the construction plan available on
+          the property’s site.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>
+
+
