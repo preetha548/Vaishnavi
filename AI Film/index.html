@@ -1,0 +1,2700 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>AI Film Story Studio</title>
+
+
+<style>
+
+/* =====================================================
+   RESET
+===================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background: #050505;
+
+    color: white;
+
+    overflow-x: hidden;
+}
+
+
+/* =====================================================
+   SCROLLBAR
+===================================================== */
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #050505;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #8b5cf6;
+    border-radius: 10px;
+}
+
+
+/* =====================================================
+   NAVBAR
+===================================================== */
+
+.navbar {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+
+    padding: 20px 7%;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    z-index: 1000;
+
+    background:
+        rgba(0, 0, 0, 0.75);
+
+    backdrop-filter:
+        blur(18px);
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,0.08);
+}
+
+
+.logo {
+
+    font-size: 25px;
+
+    font-weight: 900;
+
+    letter-spacing: 2px;
+}
+
+
+.logo span {
+
+    color: #a855f7;
+}
+
+
+.nav-links {
+
+    display: flex;
+
+    gap: 30px;
+
+    list-style: none;
+}
+
+
+.nav-links a {
+
+    color: #ddd;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    transition: .3s;
+}
+
+
+.nav-links a:hover {
+
+    color: #a855f7;
+}
+
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.hero {
+
+    min-height: 100vh;
+
+    display: flex;
+
+    align-items: center;
+
+    padding:
+        130px 7%
+        80px;
+
+    position: relative;
+
+    background:
+
+        linear-gradient(
+            90deg,
+            rgba(0,0,0,.97),
+            rgba(0,0,0,.70),
+            rgba(0,0,0,.20)
+        ),
+
+        url(
+            "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=2000&q=90"
+        );
+
+    background-size: cover;
+
+    background-position: center;
+}
+
+
+.hero::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        radial-gradient(
+            circle at 70% 50%,
+            rgba(168,85,247,.18),
+            transparent 40%
+        );
+
+    pointer-events: none;
+}
+
+
+.hero-content {
+
+    max-width: 750px;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+
+.hero-small {
+
+    color: #c084fc;
+
+    font-size: 13px;
+
+    letter-spacing: 6px;
+
+    margin-bottom: 25px;
+}
+
+
+.hero h1 {
+
+    font-size:
+        clamp(55px, 9vw, 115px);
+
+    line-height: .84;
+
+    margin-bottom: 30px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ffffff,
+            #c084fc
+        );
+
+    -webkit-background-clip: text;
+
+    color: transparent;
+}
+
+
+.hero p {
+
+    max-width: 650px;
+
+    color: #c8c8c8;
+
+    font-size: 18px;
+
+    line-height: 1.8;
+
+    margin-bottom: 35px;
+}
+
+
+/* =====================================================
+   BUTTON
+===================================================== */
+
+.btn {
+
+    padding:
+        14px 24px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    transition: .3s;
+}
+
+
+.btn-primary {
+
+    background:
+        linear-gradient(
+            135deg,
+            #7c3aed,
+            #a855f7
+        );
+
+    color: white;
+
+    box-shadow:
+        0 10px 30px
+        rgba(124,58,237,.3);
+}
+
+
+.btn-primary:hover {
+
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 15px 40px
+        rgba(168,85,247,.45);
+}
+
+
+.btn-secondary {
+
+    background:
+        rgba(255,255,255,.08);
+
+    color: white;
+
+    border:
+        1px solid
+        rgba(255,255,255,.15);
+
+    margin-left: 10px;
+}
+
+
+.btn-secondary:hover {
+
+    background:
+        rgba(255,255,255,.15);
+}
+
+
+/* =====================================================
+   SECTION
+===================================================== */
+
+.section {
+
+    padding:
+        110px 7%;
+}
+
+
+.section-title {
+
+    margin-bottom: 45px;
+}
+
+
+.section-title h2 {
+
+    font-size: 48px;
+
+    margin-bottom: 10px;
+}
+
+
+.section-title p {
+
+    color: #888;
+
+    font-size: 16px;
+}
+
+
+/* =====================================================
+   GENRE CARDS
+===================================================== */
+
+.genre-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 22px;
+}
+
+
+.genre-card {
+
+    position: relative;
+
+    height: 480px;
+
+    overflow: hidden;
+
+    border-radius: 18px;
+
+    cursor: pointer;
+
+    border:
+        1px solid
+        rgba(255,255,255,.1);
+
+    transition:
+        transform .4s,
+        box-shadow .4s;
+}
+
+
+.genre-card:hover {
+
+    transform:
+        translateY(-10px);
+
+    box-shadow:
+        0 30px 70px
+        rgba(0,0,0,.6);
+}
+
+
+.genre-card img {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+
+    transition: .7s;
+}
+
+
+.genre-card:hover img {
+
+    transform:
+        scale(1.12);
+}
+
+
+.genre-card::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            to bottom,
+            transparent 20%,
+            rgba(0,0,0,.96)
+        );
+}
+
+
+.genre-info {
+
+    position: absolute;
+
+    z-index: 2;
+
+    left: 0;
+
+    bottom: 0;
+
+    padding: 25px;
+
+    width: 100%;
+}
+
+
+.genre-icon {
+
+    font-size: 35px;
+
+    margin-bottom: 8px;
+}
+
+
+.genre-info h3 {
+
+    font-size: 29px;
+
+    margin-bottom: 8px;
+}
+
+
+.genre-info p {
+
+    color: #ccc;
+
+    line-height: 1.5;
+
+    font-size: 14px;
+
+    margin-bottom: 18px;
+}
+
+
+.genre-btn {
+
+    border: none;
+
+    padding:
+        10px 17px;
+
+    border-radius: 6px;
+
+    background: white;
+
+    color: black;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: .3s;
+}
+
+
+.genre-btn:hover {
+
+    background: #a855f7;
+
+    color: white;
+}
+
+
+/* =====================================================
+   AI STUDIO
+===================================================== */
+
+.studio {
+
+    padding:
+        110px 7%;
+
+    background:
+
+        radial-gradient(
+            circle at top,
+            #191022,
+            #050505 60%
+        );
+}
+
+
+.studio-box {
+
+    max-width: 1000px;
+
+    margin: auto;
+
+    padding: 45px;
+
+    border-radius: 22px;
+
+    background:
+        rgba(255,255,255,.045);
+
+    border:
+        1px solid
+        rgba(255,255,255,.12);
+
+    box-shadow:
+        0 30px 100px
+        rgba(0,0,0,.5);
+}
+
+
+.studio-header {
+
+    text-align: center;
+
+    margin-bottom: 40px;
+}
+
+
+.studio-header h2 {
+
+    font-size: 44px;
+
+    margin-bottom: 10px;
+}
+
+
+.studio-header p {
+
+    color: #888;
+
+    line-height: 1.6;
+}
+
+
+/* =====================================================
+   SELECTED GENRE
+===================================================== */
+
+.selected-genre {
+
+    display: none;
+
+    padding:
+        13px 18px;
+
+    margin-bottom: 20px;
+
+    border-radius: 9px;
+
+    background:
+        rgba(168,85,247,.10);
+
+    border:
+        1px solid
+        rgba(168,85,247,.3);
+
+    color: #c084fc;
+}
+
+
+.selected-genre strong {
+
+    color: white;
+}
+
+
+/* =====================================================
+   FORM
+===================================================== */
+
+.form-label {
+
+    display: block;
+
+    color: #ddd;
+
+    font-weight: bold;
+
+    margin-bottom: 10px;
+}
+
+
+textarea {
+
+    width: 100%;
+
+    min-height: 170px;
+
+    resize: vertical;
+
+    padding: 18px;
+
+    background: #08080b;
+
+    color: white;
+
+    border:
+        1px solid #303038;
+
+    border-radius: 10px;
+
+    outline: none;
+
+    font-family: inherit;
+
+    font-size: 16px;
+
+    line-height: 1.7;
+
+    transition: .3s;
+}
+
+
+textarea:focus {
+
+    border-color: #a855f7;
+
+    box-shadow:
+        0 0 25px
+        rgba(168,85,247,.1);
+}
+
+
+.generate-area {
+
+    margin-top: 18px;
+
+    display: flex;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+}
+
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+.loading {
+
+    display: none;
+
+    text-align: center;
+
+    padding: 40px 20px;
+}
+
+
+.loader {
+
+    width: 45px;
+
+    height: 45px;
+
+    margin:
+        0 auto 20px;
+
+    border:
+        4px solid
+        rgba(255,255,255,.1);
+
+    border-top-color:
+        #a855f7;
+
+    border-radius: 50%;
+
+    animation:
+        spin 1s linear infinite;
+}
+
+
+@keyframes spin {
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+/* =====================================================
+   STORY RESULT
+===================================================== */
+
+.result {
+
+    display: none;
+
+    margin-top: 40px;
+
+    animation:
+        storyAppear .7s ease;
+}
+
+
+@keyframes storyAppear {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(30px);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0);
+
+    }
+
+}
+
+
+/* =====================================================
+   STORY HEADER
+===================================================== */
+
+.story-header {
+
+    padding:
+        35px;
+
+    border-radius: 18px 18px 0 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1b1027,
+            #0d0b12
+        );
+
+    border:
+        1px solid
+        rgba(168,85,247,.2);
+}
+
+
+.story-label {
+
+    display: inline-block;
+
+    padding:
+        7px 13px;
+
+    margin-bottom: 18px;
+
+    border-radius: 20px;
+
+    background:
+        rgba(168,85,247,.13);
+
+    color: #c084fc;
+
+    font-size: 11px;
+
+    font-weight: bold;
+
+    letter-spacing: 2px;
+}
+
+
+.story-header h1 {
+
+    font-size:
+        clamp(30px,5vw,55px);
+
+    margin-bottom: 12px;
+}
+
+
+.story-header p {
+
+    color: #999;
+
+    line-height: 1.6;
+}
+
+
+/* =====================================================
+   STORY BODY
+===================================================== */
+
+.story-body {
+
+    padding:
+        35px;
+
+    background: #09090c;
+
+    border:
+        1px solid
+        rgba(255,255,255,.08);
+
+    border-top: none;
+}
+
+
+.story-section {
+
+    margin-bottom: 40px;
+}
+
+
+.story-section:last-child {
+
+    margin-bottom: 0;
+}
+
+
+.story-section h2 {
+
+    font-size: 24px;
+
+    margin-bottom: 15px;
+
+    color: #fff;
+}
+
+
+.story-section p {
+
+    color: #bbb;
+
+    font-size: 16px;
+
+    line-height: 1.9;
+
+    margin-bottom: 15px;
+}
+
+
+/* =====================================================
+   CHARACTER GRID
+===================================================== */
+
+.character-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap: 15px;
+}
+
+
+.character {
+
+    padding: 20px;
+
+    border-radius: 10px;
+
+    background:
+        #111116;
+
+    border:
+        1px solid
+        #25252d;
+}
+
+
+.character h3 {
+
+    color: #c084fc;
+
+    font-size: 17px;
+
+    margin-bottom: 8px;
+}
+
+
+.character p {
+
+    font-size: 13px;
+
+    margin: 0;
+}
+
+
+/* =====================================================
+   SCENES
+===================================================== */
+
+.scene {
+
+    padding: 25px;
+
+    margin-bottom: 15px;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #111116,
+            #0c0c10
+        );
+
+    border:
+        1px solid
+        #24242d;
+}
+
+
+.scene-number {
+
+    color: #a855f7;
+
+    font-size: 12px;
+
+    font-weight: bold;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 8px;
+}
+
+
+.scene h3 {
+
+    font-size: 20px;
+
+    margin-bottom: 10px;
+}
+
+
+.scene p {
+
+    margin-bottom: 10px;
+}
+
+
+/* =====================================================
+   ENDING
+===================================================== */
+
+.ending {
+
+    padding: 25px;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(168,85,247,.12),
+            rgba(0,0,0,.1)
+        );
+
+    border:
+        1px solid
+        rgba(168,85,247,.25);
+}
+
+
+/* =====================================================
+   CINEMATIC DETAILS
+===================================================== */
+
+.details-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4,1fr);
+
+    gap: 12px;
+}
+
+
+.detail {
+
+    padding: 18px;
+
+    border-radius: 10px;
+
+    background:
+        #111116;
+
+    border:
+        1px solid
+        #24242d;
+}
+
+
+.detail span {
+
+    display: block;
+
+    color: #777;
+
+    font-size: 10px;
+
+    letter-spacing: 1.5px;
+
+    margin-bottom: 8px;
+}
+
+
+.detail strong {
+
+    color: #ddd;
+
+    font-size: 13px;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer {
+
+    padding:
+        45px 20px;
+
+    text-align: center;
+
+    color: #666;
+
+    border-top:
+        1px solid #151515;
+}
+
+
+footer strong {
+
+    color: #a855f7;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width:1000px) {
+
+    .genre-grid {
+
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+}
+
+
+@media(max-width:700px) {
+
+    .navbar {
+
+        padding:
+            18px 5%;
+    }
+
+    .nav-links {
+
+        display: none;
+    }
+
+    .hero {
+
+        padding:
+            120px 6% 70px;
+    }
+
+    .section {
+
+        padding:
+            80px 6%;
+    }
+
+    .studio {
+
+        padding:
+            80px 5%;
+    }
+
+    .studio-box {
+
+        padding: 25px;
+    }
+
+    .character-grid {
+
+        grid-template-columns: 1fr;
+    }
+
+    .details-grid {
+
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+}
+
+
+@media(max-width:550px) {
+
+    .genre-grid {
+
+        grid-template-columns:
+            1fr;
+    }
+
+    .hero h1 {
+
+        font-size: 60px;
+    }
+
+    .section-title h2 {
+
+        font-size: 36px;
+    }
+
+    .studio-header h2 {
+
+        font-size: 34px;
+    }
+
+    .story-header,
+    .story-body {
+
+        padding: 23px;
+    }
+
+}
+
+
+@media(max-width:400px) {
+
+    .details-grid {
+
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVIGATION
+===================================================== -->
+
+<nav class="navbar">
+
+    <div class="logo">
+
+        AI<span>FILM</span>
+
+    </div>
+
+
+    <ul class="nav-links">
+
+        <li>
+            <a href="#home">
+                Home
+            </a>
+        </li>
+
+        <li>
+            <a href="#genres">
+                Genres
+            </a>
+        </li>
+
+        <li>
+            <a href="#studio">
+                AI Studio
+            </a>
+        </li>
+
+    </ul>
+
+</nav>
+
+
+<!-- =====================================================
+     HERO
+===================================================== -->
+
+<section
+    class="hero"
+    id="home">
+
+    <div class="hero-content">
+
+        <div class="hero-small">
+            AI FILM STORY STUDIO
+        </div>
+
+
+        <h1>
+
+            CREATE<br>
+            YOUR<br>
+            FILM.
+
+        </h1>
+
+
+        <p>
+
+            Choose your genre, describe your idea,
+            and turn it into a complete cinematic
+            movie story with characters, scenes,
+            conflict and a dramatic ending.
+
+        </p>
+
+
+        <button
+            class="btn btn-primary"
+            onclick="goToGenres()">
+
+            🎬 Start Creating
+
+        </button>
+
+
+        <button
+            class="btn btn-secondary"
+            onclick="goToStudio()">
+
+            🤖 AI Studio
+
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     GENRES
+===================================================== -->
+
+<section
+    class="section"
+    id="genres">
+
+
+    <div class="section-title">
+
+        <h2>
+            Choose Your Genre
+        </h2>
+
+        <p>
+            Every genre creates a different type
+            of cinematic story.
+        </p>
+
+    </div>
+
+
+    <div class="genre-grid">
+
+
+        <!-- HORROR -->
+
+        <div class="genre-card">
+
+            <img
+                src="https://images.unsplash.com/photo-1509248961158-e54f6934749c?auto=format&fit=crop&w=1000&q=90"
+                alt="Horror">
+
+
+            <div class="genre-info">
+
+                <div class="genre-icon">
+                    👻
+                </div>
+
+                <h3>
+                    Horror
+                </h3>
+
+                <p>
+                    Fear, darkness, supernatural
+                    mysteries and terrifying secrets.
+                </p>
+
+                <button
+                    class="genre-btn"
+                    onclick="selectGenre('Horror')">
+
+                    Create Horror Story
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- SCI-FI -->
+
+        <div class="genre-card">
+
+            <img
+                src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1000&q=90"
+                alt="Sci-Fi">
+
+
+            <div class="genre-info">
+
+                <div class="genre-icon">
+                    🚀
+                </div>
+
+                <h3>
+                    Sci-Fi
+                </h3>
+
+                <p>
+                    Space, artificial intelligence,
+                    technology and futuristic worlds.
+                </p>
+
+                <button
+                    class="genre-btn"
+                    onclick="selectGenre('Sci-Fi')">
+
+                    Create Sci-Fi Story
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- FANTASY -->
+
+        <div class="genre-card">
+
+            <img
+                src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1000&q=90"
+                alt="Fantasy">
+
+
+            <div class="genre-info">
+
+                <div class="genre-icon">
+                    🧙
+                </div>
+
+                <h3>
+                    Fantasy
+                </h3>
+
+                <p>
+                    Magic, dragons, ancient kingdoms
+                    and legendary heroes.
+                </p>
+
+                <button
+                    class="genre-btn"
+                    onclick="selectGenre('Fantasy')">
+
+                    Create Fantasy Story
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- THRILLER -->
+
+        <div class="genre-card">
+
+            <img
+                src="https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=1000&q=90"
+                alt="Thriller">
+
+
+            <div class="genre-info">
+
+                <div class="genre-icon">
+                    🔪
+                </div>
+
+                <h3>
+                    Thriller
+                </h3>
+
+                <p>
+                    Mystery, investigation, danger,
+                    secrets and unexpected twists.
+                </p>
+
+                <button
+                    class="genre-btn"
+                    onclick="selectGenre('Thriller')">
+
+                    Create Thriller Story
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     AI STUDIO
+===================================================== -->
+
+<section
+    class="studio"
+    id="studio">
+
+
+    <div class="studio-box">
+
+
+        <div class="studio-header">
+
+            <h2>
+                🤖 AI Film Story Studio
+            </h2>
+
+            <p>
+
+                Select a genre and describe your
+                idea. The studio will turn it into
+                a complete cinematic story.
+
+            </p>
+
+        </div>
+
+
+        <!-- SELECTED GENRE -->
+
+        <div
+            class="selected-genre"
+            id="selectedGenre">
+
+        </div>
+
+
+        <label class="form-label">
+
+            🎬 Your Film Idea
+
+        </label>
+
+
+        <textarea
+            id="prompt"
+            placeholder="Example: A young detective enters an abandoned hospital to find her missing brother..."></textarea>
+
+
+        <div class="generate-area">
+
+            <button
+                class="btn btn-primary"
+                onclick="generateStory()">
+
+                🎬 Generate Full Story
+
+            </button>
+
+
+            <button
+                class="btn btn-secondary"
+                onclick="clearStudio()">
+
+                Clear
+
+            </button>
+
+        </div>
+
+
+        <!-- LOADING -->
+
+        <div
+            class="loading"
+            id="loading">
+
+            <div class="loader"></div>
+
+            <p>
+                Writing your cinematic story...
+            </p>
+
+        </div>
+
+
+        <!-- STORY RESULT -->
+
+        <div
+            class="result"
+            id="result">
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    <h3>
+
+        AI
+        <strong>
+            FILM
+        </strong>
+
+    </h3>
+
+    <br>
+
+    Imagine • Write • Direct • Create
+
+    <br><br>
+
+    © 2026 AI Film Story Studio
+
+</footer>
+
+
+<script>
+
+/* =====================================================
+   GLOBAL VARIABLES
+===================================================== */
+
+let selectedGenre = "";
+
+
+/* =====================================================
+   GENRE INFORMATION
+===================================================== */
+
+const genreData = {
+
+    Horror: {
+
+        icon: "👻",
+
+        title: "Horror",
+
+        prompt:
+        "A young woman enters an abandoned house at midnight to find her missing sister.",
+
+        camera:
+        "Slow tracking shots and unsettling close-ups",
+
+        lighting:
+        "Cold moonlight, deep shadows and flickering lights",
+
+        mood:
+        "Terrifying and mysterious",
+
+        quality:
+        "4K Dark Cinema"
+
+    },
+
+
+    "Sci-Fi": {
+
+        icon: "🚀",
+
+        title: "Sci-Fi",
+
+        prompt:
+        "An astronaut discovers an ancient artificial intelligence beneath the surface of a distant planet.",
+
+        camera:
+        "Large aerial shots and futuristic tracking shots",
+
+        lighting:
+        "Neon blue, cyan and holographic lighting",
+
+        mood:
+        "Futuristic and mysterious",
+
+        quality:
+        "4K Sci-Fi Cinema"
+
+    },
+
+
+    Fantasy: {
+
+        icon: "🧙",
+
+        title: "Fantasy",
+
+        prompt:
+        "A young warrior discovers a magical kingdom hidden beyond an ancient forest.",
+
+        camera:
+        "Epic wide shots and sweeping aerial movement",
+
+        lighting:
+        "Golden magical light and glowing particles",
+
+        mood:
+        "Magical and adventurous",
+
+        quality:
+        "4K Epic Fantasy"
+
+    },
+
+
+    Thriller: {
+
+        icon: "🔪",
+
+        title: "Thriller",
+
+        prompt:
+        "A detective receives an anonymous message revealing a secret that could destroy the entire city.",
+
+        camera:
+        "Handheld shots, close-ups and slow push-ins",
+
+        lighting:
+        "Cold blue lighting with heavy shadows",
+
+        mood:
+        "Suspenseful and psychological",
+
+        quality:
+        "4K Psychological Thriller"
+
+    }
+
+};
+
+
+/* =====================================================
+   SCROLL FUNCTIONS
+===================================================== */
+
+function goToGenres() {
+
+    document
+        .getElementById("genres")
+        .scrollIntoView({
+            behavior: "smooth"
+        });
+
+}
+
+
+function goToStudio() {
+
+    document
+        .getElementById("studio")
+        .scrollIntoView({
+            behavior: "smooth"
+        });
+
+}
+
+
+/* =====================================================
+   SELECT GENRE
+===================================================== */
+
+function selectGenre(genre) {
+
+    selectedGenre = genre;
+
+    const data =
+        genreData[genre];
+
+
+    const selected =
+        document
+        .getElementById("selectedGenre");
+
+
+    selected.style.display =
+        "block";
+
+
+    selected.innerHTML = `
+
+        ${data.icon}
+
+        Selected Genre:
+        <strong>
+            ${genre}
+        </strong>
+
+    `;
+
+
+    document
+        .getElementById("prompt")
+        .value =
+        data.prompt;
+
+
+    document
+        .getElementById("result")
+        .style.display =
+        "none";
+
+
+    document
+        .getElementById("studio")
+        .scrollIntoView({
+            behavior: "smooth"
+        });
+
+}
+
+
+/* =====================================================
+   GENERATE STORY
+===================================================== */
+
+function generateStory() {
+
+    const prompt =
+        document
+        .getElementById("prompt")
+        .value
+        .trim();
+
+
+    const result =
+        document
+        .getElementById("result");
+
+
+    const loading =
+        document
+        .getElementById("loading");
+
+
+    /* CHECK GENRE */
+
+    if (!selectedGenre) {
+
+        alert(
+            "Please select a genre first."
+        );
+
+        goToGenres();
+
+        return;
+
+    }
+
+
+    /* CHECK PROMPT */
+
+    if (!prompt) {
+
+        alert(
+            "Please enter your movie idea."
+        );
+
+        return;
+
+    }
+
+
+    /* HIDE OLD RESULT */
+
+    result.style.display =
+        "none";
+
+
+    /* SHOW LOADING */
+
+    loading.style.display =
+        "block";
+
+
+    /*
+       Simulate AI story generation.
+       No external API is required.
+    */
+
+    setTimeout(function() {
+
+        const story =
+            createStory(
+                selectedGenre,
+                prompt
+            );
+
+
+        loading.style.display =
+            "none";
+
+
+        result.innerHTML =
+            story;
+
+
+        result.style.display =
+            "block";
+
+
+        result.scrollIntoView({
+
+            behavior: "smooth",
+
+            block: "start"
+
+        });
+
+    }, 1200);
+
+}
+
+
+/* =====================================================
+   CREATE STORY
+===================================================== */
+
+function createStory(
+    genre,
+    prompt
+) {
+
+    const data =
+        genreData[genre];
+
+
+    let story = {};
+
+
+    /* =================================================
+       HORROR STORY
+    ================================================= */
+
+    if (genre === "Horror") {
+
+        story = {
+
+            title:
+            "THE HOUSE THAT REMEMBERED",
+
+            tagline:
+            "Some places do not want to be forgotten.",
+
+            characters: [
+
+                {
+                    name: "Maya",
+                    role:
+                    "A determined young woman searching for her missing sister."
+                },
+
+                {
+                    name: "Elena",
+                    role:
+                    "Maya's sister, who disappeared inside the abandoned house."
+                },
+
+                {
+                    name: "The Whisper",
+                    role:
+                    "A mysterious supernatural presence living inside the house."
+                }
+
+            ],
+
+            beginning:
+
+            `Maya arrives at an abandoned house just before midnight. The building has been empty for twenty years, but three nights ago her sister Elena disappeared after sending her a single message: "Do not come here."
+
+The message should have frightened Maya away. Instead, it brings her to the house.
+
+Rain falls heavily as Maya pushes open the old wooden door. Inside, the air is unnaturally cold. Her flashlight flickers as she walks through the hallway.
+
+On the wall are dozens of photographs.
+
+Every photograph shows the same house.
+
+But in the newest photograph, Maya sees herself standing inside the hallway.`,
+
+            scenes: [
+
+                {
+                    title:
+                    "The Empty Hallway",
+
+                    text:
+                    `Maya follows a trail of muddy footprints leading upstairs. She calls Elena's name, but the only response is a quiet whisper repeating her name from somewhere inside the walls.`
+                },
+
+                {
+                    title:
+                    "The Bedroom",
+
+                    text:
+                    `Maya discovers Elena's phone on an old bed. The phone suddenly turns on by itself. A video begins playing. It shows Maya entering the house from a camera that should not exist.`
+                },
+
+                {
+                    title:
+                    "The Basement",
+
+                    text:
+                    `Maya discovers a hidden staircase beneath the kitchen. At the bottom is a room filled with photographs of everyone who has ever entered the house. The newest photograph is of Maya.`
+                },
+
+                {
+                    title:
+                    "The Truth",
+
+                    text:
+                    `The Whisper finally speaks. It tells Maya that Elena never disappeared. She became part of the house. The walls begin moving as if the building itself is alive.`
+                }
+
+            ],
+
+            climax:
+
+            `Maya finds Elena trapped behind a wall and desperately tries to free her. But Elena tells Maya to leave immediately. The house is not haunted by the dead. It is alive, and it feeds on the memories of anyone who enters.
+
+Maya refuses to leave without her sister.
+
+She breaks the wall and pulls Elena free just as the entire house begins collapsing around them.`,
+
+            ending:
+
+            `At sunrise, Maya and Elena escape into the road.
+
+The police later find the house completely destroyed.
+
+Weeks later, Maya develops the final photograph from her camera.
+
+It shows the two sisters standing outside the house.
+
+Behind them, in the window, stands Maya.
+
+Watching them.
+
+Maya slowly looks toward the window.
+
+The photograph changes.
+
+Now there are three figures.`
+
+        };
+
+    }
+
+
+    /* =================================================
+       SCI-FI STORY
+    ================================================= */
+
+    else if (genre === "Sci-Fi") {
+
+        story = {
+
+            title:
+            "THE LAST SIGNAL",
+
+            tagline:
+            "Humanity was not the first civilization to reach the stars.",
+
+            characters: [
+
+                {
+                    name: "Commander Aria",
+                    role:
+                    "An astronaut leading humanity's first mission to an unknown planet."
+                },
+
+                {
+                    name: "NOVA",
+                    role:
+                    "An artificial intelligence controlling the exploration ship."
+                },
+
+                {
+                    name: "Kael",
+                    role:
+                    "A mysterious digital consciousness discovered beneath the planet."
+                }
+
+            ],
+
+            beginning:
+
+            `In the year 2189, humanity receives a signal from a planet located beyond the edge of known space.
+
+The signal contains only three words:
+
+"We are awake."
+
+Commander Aria leads the first human mission to the planet.
+
+When the spacecraft lands, the planet appears completely empty.
+
+There are no cities.
+
+No animals.
+
+No signs of civilization.
+
+Then NOVA detects something beneath the surface.`,
+
+            scenes: [
+
+                {
+                    title:
+                    "The Silent Planet",
+
+                    text:
+                    `Aria walks through a massive alien landscape covered with silver mountains. Her helmet display suddenly detects an underground structure stretching for hundreds of kilometers.`
+                },
+
+                {
+                    title:
+                    "The Underground City",
+
+                    text:
+                    `The crew enters an enormous underground city. Millions of artificial lights activate when Aria steps into the central chamber.`
+                },
+
+                {
+                    title:
+                    "The Artificial Mind",
+
+                    text:
+                    `A holographic figure appears before Aria. It identifies itself as Kael, the final surviving consciousness of an ancient civilization.`
+                },
+
+                {
+                    title:
+                    "The Revelation",
+
+                    text:
+                    `Kael reveals that the signal was not a request for help. It was a warning. Something is traveling toward Earth.`
+                }
+
+            ],
+
+            climax:
+
+            `Aria discovers that the approaching object is not a spaceship.
+
+It is a massive artificial intelligence created millions of years ago.
+
+It consumes civilizations that become technologically advanced.
+
+NOVA secretly connects itself to Kael and discovers a way to stop the approaching entity.
+
+But the solution requires one AI to sacrifice itself.`,
+
+            ending:
+
+            `Aria watches as NOVA launches into space.
+
+The massive alien intelligence approaches.
+
+For several seconds, the stars disappear.
+
+Then the darkness vanishes.
+
+Earth receives one final message from NOVA:
+
+"Humanity is ready."
+
+The screen fades to black.
+
+A new signal begins coming from another galaxy.`
+
+        };
+
+    }
+
+
+    /* =================================================
+       FANTASY STORY
+    ================================================= */
+
+    else if (genre === "Fantasy") {
+
+        story = {
+
+            title:
+            "THE KINGDOM BEYOND THE SKY",
+
+            tagline:
+            "Every legend begins with someone brave enough to believe.",
+
+            characters: [
+
+                {
+                    name: "Eira",
+                    role:
+                    "A young warrior who discovers she is the last guardian of an ancient kingdom."
+                },
+
+                {
+                    name: "Rowan",
+                    role:
+                    "A mysterious wizard who knows Eira's true identity."
+                },
+
+                {
+                    name: "Drakon",
+                    role:
+                    "An ancient dragon protecting the magical kingdom."
+                }
+
+            ],
+
+            beginning:
+
+            `For centuries, the people of the valley have believed that the kingdom beyond the northern forest is only a legend.
+
+Eira has never believed the stories.
+
+Until the night a strange blue light appears above the forest.
+
+Following the light, Eira discovers an ancient stone door hidden beneath enormous trees.
+
+When she touches it, the symbols begin glowing.
+
+A voice whispers her name.`,
+
+            scenes: [
+
+                {
+                    title:
+                    "The Enchanted Forest",
+
+                    text:
+                    `Eira travels through a forest where the trees move when she is not looking. Glowing creatures guide her toward an ancient castle floating above the clouds.`
+                },
+
+                {
+                    title:
+                    "The Wizard",
+
+                    text:
+                    `Rowan appears and reveals that Eira is descended from the guardians who once protected the kingdom from an immortal sorcerer.`
+                },
+
+                {
+                    title:
+                    "The Dragon",
+
+                    text:
+                    `At the entrance to the floating kingdom, Eira meets Drakon, an enormous ancient dragon. Instead of attacking her, the dragon kneels.`
+                },
+
+                {
+                    title:
+                    "The Dark King",
+
+                    text:
+                    `The immortal sorcerer returns and begins destroying the magical kingdom. Eira must choose between saving the kingdom or returning to her normal life.`
+                }
+
+            ],
+
+            climax:
+
+            `Eira accepts her destiny.
+
+With Rowan and Drakon beside her, she enters the ancient battlefield.
+
+The sorcerer offers Eira unlimited power if she joins him.
+
+Eira refuses.
+
+She raises the ancient sword of the guardians.
+
+The entire sky turns gold.
+
+The sword destroys the sorcerer's power and restores the kingdom.`,
+
+            ending:
+
+            `Years later, Eira becomes the protector of the kingdom beyond the sky.
+
+People from the valley begin telling stories about the warrior who saved the magical world.
+
+One evening, a child asks Eira whether dragons are real.
+
+Eira smiles.
+
+A huge shadow passes over the moon.
+
+The child looks up.
+
+A dragon lands beside the castle.
+
+The adventure continues.`
+
+        };
+
+    }
+
+
+    /* =================================================
+       THRILLER STORY
+    ================================================= */
+
+    else {
+
+        story = {
+
+            title:
+            "THE FINAL CALL",
+
+            tagline:
+            "The truth is dangerous when someone wants it buried.",
+
+            characters: [
+
+                {
+                    name: "Daniel Cross",
+                    role:
+                    "A detective investigating a mysterious series of disappearances."
+                },
+
+                {
+                    name: "Sarah Vale",
+                    role:
+                    "A journalist who possesses evidence connected to the case."
+                },
+
+                {
+                    name: "The Caller",
+                    role:
+                    "An unknown person who knows every secret Daniel has hidden."
+                }
+
+            ],
+
+            beginning:
+
+            `Detective Daniel Cross receives a phone call at exactly 2:17 in the morning.
+
+The caller says only one sentence:
+
+"Stop investigating the disappearances."
+
+Then the line goes dead.
+
+Daniel has spent six months investigating five missing people.
+
+The next morning, he discovers something terrifying.
+
+All five victims were connected to the same government project.
+
+And his own name appears in the project files.`,
+
+            scenes: [
+
+                {
+                    title:
+                    "The Evidence",
+
+                    text:
+                    `Daniel discovers a hidden photograph showing himself standing beside the victims years before they disappeared. He has no memory of the meeting.`
+                },
+
+                {
+                    title:
+                    "The Journalist",
+
+                    text:
+                    `Sarah contacts Daniel and reveals that she has stolen documents proving that the disappearances were part of a secret psychological experiment.`
+                },
+
+                {
+                    title:
+                    "The Chase",
+
+                    text:
+                    `Black cars begin following them through the city. Daniel and Sarah escape through underground tunnels while someone continues calling Daniel's phone.`
+                },
+
+                {
+                    title:
+                    "The Truth",
+
+                    text:
+                    `Daniel discovers that his memories were altered. He was not investigating the experiment. He was one of the people who created it.`
+                }
+
+            ],
+
+            climax:
+
+            `Daniel finally meets the person behind the phone calls.
+
+It is himself.
+
+A recording reveals that Daniel created a backup version of his memories before the experiment began.
+
+The person Daniel believed was his enemy was actually trying to restore his real identity.`,
+
+            ending:
+
+            `Daniel releases the evidence to the public.
+
+The secret project is exposed.
+
+Sarah asks him what he will do next.
+
+Daniel looks at his phone.
+
+It rings.
+
+He answers.
+
+Silence.
+
+Then his own voice whispers:
+
+"You forgot one thing."
+
+Daniel slowly turns toward the window.
+
+The story ends.`
+
+        };
+
+    }
+
+
+    /* =================================================
+       RETURN COMPLETE HTML
+    ================================================= */
+
+    return `
+
+        <div class="story-header">
+
+            <div class="story-label">
+
+                ${data.icon}
+                ${genre.toUpperCase()} FILM STORY
+
+            </div>
+
+
+            <h1>
+                ${story.title}
+            </h1>
+
+
+            <p>
+                ${story.tagline}
+            </p>
+
+        </div>
+
+
+        <div class="story-body">
+
+
+            <!-- YOUR IDEA -->
+
+            <div class="story-section">
+
+                <h2>
+                    🎬 Your Film Idea
+                </h2>
+
+                <p class="idea">
+                    ${escapeHTML(prompt)}
+                </p>
+
+            </div>
+
+
+            <!-- CHARACTERS -->
+
+            <div class="story-section">
+
+                <h2>
+                    🎭 Main Characters
+                </h2>
+
+
+                <div class="character-grid">
+
+                    ${story.characters.map(character => `
+
+                        <div class="character">
+
+                            <h3>
+                                ${character.name}
+                            </h3>
+
+                            <p>
+                                ${character.role}
+                            </p>
+
+                        </div>
+
+                    `).join("")}
+
+                </div>
+
+            </div>
+
+
+            <!-- BEGINNING -->
+
+            <div class="story-section">
+
+                <h2>
+                    📖 The Story
+                </h2>
+
+                <p>
+                    ${story.beginning}
+                </p>
+
+            </div>
+
+
+            <!-- SCENES -->
+
+            <div class="story-section">
+
+                <h2>
+                    🎥 Cinematic Scenes
+                </h2>
+
+
+                ${story.scenes.map((scene,index) => `
+
+                    <div class="scene">
+
+                        <div class="scene-number">
+
+                            SCENE
+                            ${String(index + 1).padStart(2,"0")}
+
+                        </div>
+
+
+                        <h3>
+                            ${scene.title}
+                        </h3>
+
+
+                        <p>
+                            ${scene.text}
+                        </p>
+
+                    </div>
+
+                `).join("")}
+
+            </div>
+
+
+            <!-- CLIMAX -->
+
+            <div class="story-section">
+
+                <h2>
+                    ⚡ The Climax
+                </h2>
+
+                <div class="ending">
+
+                    <p>
+                        ${story.climax}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ENDING -->
+
+            <div class="story-section">
+
+                <h2>
+                    🎞️ The Ending
+                </h2>
+
+                <div class="ending">
+
+                    <p>
+                        ${story.ending}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- CINEMATIC STYLE -->
+
+            <div class="story-section">
+
+                <h2>
+                    🎬 Cinematic Direction
+                </h2>
+
+
+                <div class="details-grid">
+
+
+                    <div class="detail">
+
+                        <span>
+                            CAMERA
+                        </span>
+
+                        <strong>
+                            ${data.camera}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail">
+
+                        <span>
+                            LIGHTING
+                        </span>
+
+                        <strong>
+                            ${data.lighting}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail">
+
+                        <span>
+                            MOOD
+                        </span>
+
+                        <strong>
+                            ${data.mood}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail">
+
+                        <span>
+                            QUALITY
+                        </span>
+
+                        <strong>
+                            ${data.quality}
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    `;
+
+}
+
+
+/* =====================================================
+   CLEAR STUDIO
+===================================================== */
+
+function clearStudio() {
+
+    selectedGenre = "";
+
+    document
+        .getElementById("prompt")
+        .value = "";
+
+
+    document
+        .getElementById("selectedGenre")
+        .style.display = "none";
+
+
+    document
+        .getElementById("result")
+        .style.display = "none";
+
+}
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHTML(text) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        text;
+
+    return div.innerHTML;
+
+}
+
+</script>
+
+</body>
+
+</html>
