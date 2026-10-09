@@ -1,0 +1,595 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StayEase - Hostel Management System</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#f4f7fb;color:#1e293b}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:235px;background:#172554;color:white;padding:24px 14px;position:fixed;height:100vh;overflow-y:auto}
+.logo{font-size:25px;font-weight:bold;color:#5eead4;padding:0 12px 28px}
+.sidebar p{font-size:12px;color:#a5b4fc;padding:12px}
+.sidebar a{display:block;color:#e2e8f0;text-decoration:none;padding:13px 12px;margin:4px 0;border-radius:7px;cursor:pointer}
+.sidebar a:hover,.sidebar a.active{background:#0f766e;color:white}
+.main{margin-left:235px;padding:25px;width:calc(100% - 235px)}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;margin-bottom:25px}
+.topbar h1{font-size:25px;margin-bottom:7px}
+.topbar span{color:#64748b;font-size:14px}
+button{border:0;border-radius:6px;padding:10px 13px;background:#0f766e;color:white;cursor:pointer;font-size:13px;margin:2px}
+button:hover{opacity:.85}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:22px}
+.card,.panel{background:white;border-radius:11px;padding:21px;box-shadow:0 3px 14px #0f172a0a;margin-bottom:20px}
+.card p{color:#64748b;font-size:14px;margin-bottom:12px}
+.card h2{font-size:25px;overflow-wrap:anywhere}
+.blue{color:#2563eb}.teal{color:#0f766e}.orange{color:#ea580c}.red{color:#dc2626}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.panel h3{margin-bottom:17px}
+.section{display:none}.section.active{display:block}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;white-space:nowrap}
+th,td{text-align:left;padding:13px 10px;border-bottom:1px solid #e2e8f0;font-size:13px}
+th{background:#f8fafc;color:#64748b}
+.status{display:inline-block;padding:5px 9px;border-radius:20px;font-size:12px}
+.paid,.available,.resolved{color:#047857;background:#d1fae5}
+.pending,.maintenance{color:#b45309;background:#fef3c7}
+.occupied,.open{color:#b91c1c;background:#fee2e2}
+.toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+input,select,textarea{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:6px;font-size:14px;background:white}
+.toolbar input{width:240px;max-width:100%}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:13px;margin-bottom:7px}
+.full{grid-column:1/-1}
+.room-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.room{padding:18px;border:1px solid #e2e8f0;border-radius:9px}
+.room h3{margin-bottom:12px}
+.room p{margin:10px 0;color:#64748b;font-size:13px}
+.progress{background:#e2e8f0;height:8px;border-radius:10px;overflow:hidden;margin:12px 0}
+.progress div{height:100%;background:#0f766e}
+.modal{display:none;position:fixed;inset:0;background:#0f172a99;z-index:10;justify-content:center;align-items:center;padding:15px}
+.modal-content{background:white;padding:24px;border-radius:12px;width:560px;max-width:100%;max-height:90vh;overflow-y:auto}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.close{background:#e2e8f0;color:#1e293b}
+.delete{background:#dc2626}
+.view{background:#2563eb}
+.edit{background:#d97706}
+footer{padding:15px 0;color:#64748b;font-size:13px}
+@media(max-width:1100px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.room-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){
+.sidebar{width:68px;padding:15px 6px}.logo{font-size:12px;padding:10px 0 20px;text-align:center}
+.sidebar p{display:none}.sidebar a{font-size:0;text-align:center;padding:15px 2px}.sidebar a::first-letter{font-size:18px}
+.main{margin-left:68px;width:calc(100% - 68px);padding:13px}.topbar h1{font-size:20px}
+.cards,.grid,.room-grid,.form-grid{grid-template-columns:1fr}.full{grid-column:auto}
+}
+</style>
+</head>
+
+<body>
+<div class="layout">
+<aside class="sidebar">
+<div class="logo">StayEase</div>
+<p>MAIN MENU</p>
+<a class="active" onclick="showSection('dashboard',this)">▦ Dashboard</a>
+<a onclick="showSection('students',this)">♙ Students</a>
+<a onclick="showSection('rooms',this)">▤ Rooms & Beds</a>
+<a onclick="showSection('fees',this)">₹ Fee Management</a>
+<a onclick="showSection('complaints',this)">☏ Complaints</a>
+<a onclick="showSection('reports',this)">▥ Reports</a>
+</aside>
+
+<main class="main">
+<header class="topbar">
+<div>
+<h1 id="pageTitle">Hostel Management Dashboard</h1>
+<span>Manage hostel operations in one place</span>
+</div>
+<button onclick="openStudentModal()">+ Add Student</button>
+</header>
+
+<section id="dashboard" class="section active">
+<div class="cards">
+<div class="card"><p>Total Students</p><h2 class="blue" id="totalStudents">0</h2></div>
+<div class="card"><p>Available Beds</p><h2 class="teal" id="availableBeds">0</h2></div>
+<div class="card"><p>Pending Fees</p><h2 class="orange" id="pendingFees">₹0</h2></div>
+<div class="card"><p>Open Complaints</p><h2 class="red" id="openComplaints">0</h2></div>
+</div>
+
+<div class="grid">
+<div class="panel">
+<h3>Hostel Occupancy</h3>
+<p id="occupancyText">Occupancy: 0%</p>
+<div class="progress"><div id="occupancyBar" style="width:0%"></div></div>
+<p style="font-size:13px;color:#64748b">Current occupied beds compared with total capacity.</p>
+</div>
+<div class="panel">
+<h3>Quick Actions</h3>
+<button onclick="openStudentModal()">Add Student</button>
+<button onclick="showSection('rooms')">View Rooms</button>
+<button onclick="showSection('fees')">Manage Fees</button>
+<button onclick="showSection('complaints')">Complaints</button>
+</div>
+</div>
+
+<div class="panel">
+<h3>Recent Student Records</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>ID</th><th>Name</th><th>Room</th><th>Phone</th><th>Fee Status</th></tr></thead>
+<tbody id="recentStudents"></tbody>
+</table></div>
+</div>
+</section>
+
+<section id="students" class="section">
+<div class="panel">
+<div class="toolbar">
+<h3>Student Management</h3>
+<input id="studentSearch" placeholder="Search name, phone or room..." oninput="renderStudents()">
+<button onclick="openStudentModal()">+ Add Student</button>
+</div>
+<div class="table-wrap"><table>
+<thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Room</th><th>Monthly Fee</th><th>Status</th><th>Actions</th></tr></thead>
+<tbody id="studentTable"></tbody>
+</table></div>
+</div>
+</section>
+
+<section id="rooms" class="section">
+<div class="panel">
+<h3>Room & Bed Availability</h3>
+<p style="color:#64748b;margin-bottom:18px">Room availability updates automatically when student records change.</p>
+<div id="roomGrid" class="room-grid"></div>
+</div>
+</section>
+
+<section id="fees" class="section">
+<div class="panel">
+<div class="toolbar"><h3>Fee Management</h3>
+<input id="feeSearch" placeholder="Search student..." oninput="renderFees()"></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Student</th><th>Room</th><th>Monthly Fee</th><th>Payment Status</th><th>Action</th></tr></thead>
+<tbody id="feeTable"></tbody>
+</table></div>
+</div>
+</section>
+
+<section id="complaints" class="section">
+<div class="panel">
+<div class="toolbar"><h3>Complaint Management</h3><button onclick="openComplaintModal()">+ New Complaint</button></div>
+<div class="table-wrap"><table>
+<thead><tr><th>ID</th><th>Student</th><th>Issue</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+<tbody id="complaintTable"></tbody>
+</table></div>
+</div>
+</section>
+
+<section id="reports" class="section">
+<div class="cards">
+<div class="card"><p>Total Students</p><h2 id="reportStudents">0</h2></div>
+<div class="card"><p>Expected Monthly Fees</p><h2 id="reportIncome">₹0</h2></div>
+<div class="card"><p>Fees Collected</p><h2 id="reportCollected">₹0</h2></div>
+<div class="card"><p>Fees Pending</p><h2 id="reportPending">₹0</h2></div>
+</div>
+<div class="panel"><h3>Export Student Report</h3>
+<p style="margin:12px 0;color:#64748b">Download student records in CSV format.</p>
+<button onclick="exportCSV()">Export CSV</button></div>
+</section>
+
+<footer>StayEase Hostel / PG Management System · Frontend Demo</footer>
+</main>
+</div>
+
+<!-- Student form -->
+<div id="studentModal" class="modal">
+<div class="modal-content">
+<div class="modal-head"><h3 id="studentModalTitle">Add New Student</h3><button class="close" onclick="closeModal('studentModal')">✕</button></div>
+<form id="studentForm">
+<input type="hidden" name="id">
+<div class="form-grid">
+<div class="form-group"><label>Full Name</label><input name="name" required maxlength="100" placeholder="Student name"></div>
+<div class="form-group"><label>Phone Number</label><input name="phone" required type="tel" maxlength="20" placeholder="Phone number"></div>
+<div class="form-group"><label>Room</label><select name="room" id="studentRoom" required></select></div>
+<div class="form-group"><label>Monthly Fee (₹)</label><input name="fee" type="number" min="0" step="1" required value="5000"></div>
+<div class="form-group full"><label>Payment Status</label><select name="paid"><option value="false">Pending</option><option value="true">Paid</option></select></div>
+</div>
+<button type="submit" id="saveStudentButton">Save Student</button>
+<button type="button" class="close" onclick="closeModal('studentModal')">Cancel</button>
+</form>
+</div>
+</div>
+
+<!-- View student form -->
+<div id="viewModal" class="modal">
+<div class="modal-content">
+<div class="modal-head"><h3>Student Details</h3><button class="close" onclick="closeModal('viewModal')">✕</button></div>
+<div id="studentDetails"></div>
+<button onclick="closeModal('viewModal')">Close</button>
+</div>
+</div>
+
+<!-- Complaint form -->
+<div id="complaintModal" class="modal">
+<div class="modal-content">
+<div class="modal-head"><h3>Register Complaint</h3><button class="close" onclick="closeModal('complaintModal')">✕</button></div>
+<form id="complaintForm">
+<div class="form-group"><label>Student</label><select name="studentId" id="complaintStudent" required></select></div>
+<div class="form-group"><label>Complaint Description</label><textarea name="issue" rows="4" maxlength="500" required placeholder="Describe the issue"></textarea></div>
+<button type="submit">Submit Complaint</button>
+</form>
+</div>
+</div>
+
+<script>
+const STORAGE_KEY = "stayease_hostel_frontend_v1";
+
+const defaultData = {
+students:[
+{id:1,name:"Arun Kumar",phone:"9876543210",room:"A-101",fee:5000,paid:true},
+{id:2,name:"Priya Sharma",phone:"9876543211",room:"A-101",fee:5000,paid:false},
+{id:3,name:"Rahul Raj",phone:"9876543212",room:"A-102",fee:4500,paid:true},
+{id:4,name:"Divya S",phone:"9876543213",room:"B-201",fee:5500,paid:false},
+{id:5,name:"Karthik M",phone:"9876543214",room:"B-202",fee:5000,paid:true}
+],
+complaints:[
+{id:1,studentId:2,issue:"Bathroom maintenance",date:"2026-10-08",status:"Open"},
+{id:2,studentId:4,issue:"Wi-Fi connection issue",date:"2026-10-09",status:"Open"}
+]
+};
+
+const rooms=[
+{name:"A-101",capacity:4,floor:"Ground Floor"},
+{name:"A-102",capacity:3,floor:"Ground Floor"},
+{name:"B-201",capacity:4,floor:"First Floor"},
+{name:"B-202",capacity:3,floor:"First Floor"},
+{name:"C-301",capacity:4,floor:"Second Floor"},
+{name:"C-302",capacity:3,floor:"Second Floor"}
+];
+
+function loadData(){
+    try {
+        const saved=localStorage.getItem(STORAGE_KEY);
+        if(saved){
+            const data=JSON.parse(saved);
+            if(Array.isArray(data.students)&&Array.isArray(data.complaints)) return data;
+        }
+    } catch(error) {
+        console.warn("Saved data could not be loaded.",error);
+    }
+    return JSON.parse(JSON.stringify(defaultData));
+}
+
+let data=loadData();
+let students=data.students;
+let complaints=data.complaints;
+
+function saveData(){
+    try {
+        localStorage.setItem(STORAGE_KEY,JSON.stringify({students,complaints}));
+    } catch(error) {
+        alert("Browser storage is unavailable. Changes may not persist after refresh.");
+    }
+}
+
+function money(amount){
+    return "₹"+Number(amount).toLocaleString("en-IN");
+}
+
+function escapeHTML(value){
+    return String(value).replace(/[&<>"']/g,ch=>({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    })[ch]);
+}
+
+function getStudent(id){
+    return students.find(s=>s.id===Number(id));
+}
+
+function roomCount(name){
+    return students.filter(s=>s.room===name).length;
+}
+
+function showSection(id,link){
+    document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+    document.querySelectorAll(".sidebar a").forEach(a=>a.classList.remove("active"));
+
+    const links=[...document.querySelectorAll(".sidebar a")];
+    if(link) link.classList.add("active");
+    else {
+        const index={dashboard:0,students:1,rooms:2,fees:3,complaints:4,reports:5}[id];
+        if(links[index]) links[index].classList.add("active");
+    }
+
+    const titles={
+        dashboard:"Hostel Management Dashboard",
+        students:"Student Management",
+        rooms:"Rooms & Beds",
+        fees:"Fee Management",
+        complaints:"Complaint Management",
+        reports:"Reports & Analytics"
+    };
+    document.getElementById("pageTitle").textContent=titles[id];
+    renderAll();
+}
+
+function renderDashboard(){
+    const totalBeds=rooms.reduce((sum,r)=>sum+r.capacity,0);
+    const occupied=students.length;
+    const available=Math.max(0,totalBeds-occupied);
+    const occupancy=totalBeds?Math.min(100,Math.round(occupied/totalBeds*100)):0;
+    const pending=students.filter(s=>!s.paid).reduce((sum,s)=>sum+Number(s.fee),0);
+
+    document.getElementById("totalStudents").textContent=students.length;
+    document.getElementById("availableBeds").textContent=available;
+    document.getElementById("pendingFees").textContent=money(pending);
+    document.getElementById("openComplaints").textContent=complaints.filter(c=>c.status==="Open").length;
+    document.getElementById("occupancyText").textContent=`Occupancy: ${occupancy}% (${occupied}/${totalBeds} beds)`;
+    document.getElementById("occupancyBar").style.width=occupancy+"%";
+
+    document.getElementById("recentStudents").innerHTML=students.slice(-5).reverse().map(s=>`
+    <tr><td>${s.id}</td><td>${escapeHTML(s.name)}</td><td>${escapeHTML(s.room)}</td><td>${escapeHTML(s.phone)}</td>
+    <td><span class="status ${s.paid?"paid":"pending"}">${s.paid?"Paid":"Pending"}</span></td></tr>
+    `).join("")||'<tr><td colspan="5">No student records.</td></tr>';
+}
+
+function renderStudents(){
+    const query=(document.getElementById("studentSearch")?.value||"").toLowerCase();
+    const filtered=students.filter(s=>s.name.toLowerCase().includes(query)||s.room.toLowerCase().includes(query)||s.phone.includes(query));
+
+    document.getElementById("studentTable").innerHTML=filtered.map(s=>`
+    <tr>
+    <td>${s.id}</td><td>${escapeHTML(s.name)}</td><td>${escapeHTML(s.phone)}</td>
+    <td>${escapeHTML(s.room)}</td><td>${money(s.fee)}</td>
+    <td><span class="status ${s.paid?"paid":"pending"}">${s.paid?"Paid":"Pending"}</span></td>
+    <td>
+    <button class="view" onclick="viewStudent(${s.id})">View</button>
+    <button class="edit" onclick="editStudent(${s.id})">Update</button>
+    <button class="delete" onclick="deleteStudent(${s.id})">Delete</button>
+    </td></tr>`).join("")||'<tr><td colspan="7">No students found.</td></tr>';
+}
+
+function renderRooms(){
+    document.getElementById("roomGrid").innerHTML=rooms.map(r=>{
+        const count=roomCount(r.name);
+        const full=count>=r.capacity;
+        const percent=Math.min(100,count/r.capacity*100);
+        return `<div class="room">
+        <h3>Room ${escapeHTML(r.name)}</h3>
+        <span class="status ${full?"occupied":"available"}">${full?"Full":"Available"}</span>
+        <p>${escapeHTML(r.floor)}</p><p>Occupied beds: ${count}/${r.capacity}</p>
+        <div class="progress"><div style="width:${percent}%"></div></div>
+        <p>${r.capacity-count} beds available</p></div>`;
+    }).join("");
+
+    const select=document.getElementById("studentRoom");
+    const current=select.value;
+    select.innerHTML=rooms.map(r=>{
+        const count=roomCount(r.name);
+        const isFull=count>=r.capacity;
+        return `<option value="${r.name}" ${isFull?"disabled":""}>${r.name} (${r.capacity-count} beds available)</option>`;
+    }).join("");
+    if([...select.options].some(o=>o.value===current&&!o.disabled)) select.value=current;
+}
+
+function renderFees(){
+    const query=(document.getElementById("feeSearch")?.value||"").toLowerCase();
+    const filtered=students.filter(s=>s.name.toLowerCase().includes(query));
+    document.getElementById("feeTable").innerHTML=filtered.map(s=>`
+    <tr><td>${escapeHTML(s.name)}</td><td>${escapeHTML(s.room)}</td><td>${money(s.fee)}</td>
+    <td><span class="status ${s.paid?"paid":"pending"}">${s.paid?"Paid":"Pending"}</span></td>
+    <td>${s.paid
+        ?`<button class="edit" onclick="setPayment(${s.id},false)">Mark Pending</button>`
+        :`<button onclick="setPayment(${s.id},true)">Mark Paid</button>`}</td></tr>
+    `).join("")||'<tr><td colspan="5">No records found.</td></tr>';
+}
+
+function renderComplaints(){
+    document.getElementById("complaintTable").innerHTML=complaints.map(c=>{
+        const student=getStudent(c.studentId);
+        return `<tr><td>${c.id}</td><td>${escapeHTML(student?.name||"Former Student")}</td>
+        <td>${escapeHTML(c.issue)}</td><td>${escapeHTML(c.date)}</td>
+        <td><span class="status ${c.status==="Open"?"open":"resolved"}">${escapeHTML(c.status)}</span></td>
+        <td>${c.status==="Open"?`<button onclick="resolveComplaint(${c.id})">Resolve</button>`:"Completed"}</td></tr>`;
+    }).join("")||'<tr><td colspan="6">No complaints registered.</td></tr>';
+
+    document.getElementById("complaintStudent").innerHTML=students.map(s=>
+        `<option value="${s.id}">${escapeHTML(s.name)}</option>`).join("");
+}
+
+function renderReports(){
+    const total=students.reduce((sum,s)=>sum+Number(s.fee),0);
+    const collected=students.filter(s=>s.paid).reduce((sum,s)=>sum+Number(s.fee),0);
+    document.getElementById("reportStudents").textContent=students.length;
+    document.getElementById("reportIncome").textContent=money(total);
+    document.getElementById("reportCollected").textContent=money(collected);
+    document.getElementById("reportPending").textContent=money(total-collected);
+}
+
+function renderAll(){
+    renderDashboard();
+    renderStudents();
+    renderRooms();
+    renderFees();
+    renderComplaints();
+    renderReports();
+}
+
+function openStudentModal(id=null){
+    const form=document.getElementById("studentForm");
+    form.reset();
+    form.elements.id.value="";
+    renderRooms();
+
+    if(id!==null){
+        const s=getStudent(id);
+        if(!s)return;
+        form.elements.id.value=s.id;
+        form.elements.name.value=s.name;
+        form.elements.phone.value=s.phone;
+        form.elements.fee.value=s.fee;
+        form.elements.paid.value=String(s.paid);
+
+        const option=[...form.elements.room.options].find(o=>o.value===s.room);
+        if(option) option.disabled=false;
+        form.elements.room.value=s.room;
+
+        document.getElementById("studentModalTitle").textContent="Update Student";
+        document.getElementById("saveStudentButton").textContent="Update Student";
+    } else {
+        if(!rooms.some(r=>roomCount(r.name)<r.capacity)){
+            alert("No beds are currently available.");
+            return;
+        }
+        document.getElementById("studentModalTitle").textContent="Add New Student";
+        document.getElementById("saveStudentButton").textContent="Save Student";
+    }
+
+    document.getElementById("studentModal").style.display="flex";
+}
+
+function editStudent(id){
+    openStudentModal(id);
+}
+
+function viewStudent(id){
+    const s=getStudent(id);
+    if(!s)return;
+
+    document.getElementById("studentDetails").innerHTML=`
+    <div style="line-height:2.2">
+    <p><b>Student ID:</b> ${s.id}</p>
+    <p><b>Full Name:</b> ${escapeHTML(s.name)}</p>
+    <p><b>Phone Number:</b> ${escapeHTML(s.phone)}</p>
+    <p><b>Room Number:</b> ${escapeHTML(s.room)}</p>
+    <p><b>Monthly Fee:</b> ${money(s.fee)}</p>
+    <p><b>Payment Status:</b> <span class="status ${s.paid?"paid":"pending"}">${s.paid?"Paid":"Pending"}</span></p>
+    </div>
+    <button class="edit" onclick="closeModal('viewModal');editStudent(${s.id})">Update Details</button>`;
+    document.getElementById("viewModal").style.display="flex";
+}
+
+function closeModal(id){
+    document.getElementById(id).style.display="none";
+}
+
+document.getElementById("studentForm").addEventListener("submit",function(e){
+    e.preventDefault();
+    const form=this;
+    const data=new FormData(form);
+    const id=Number(data.get("id"));
+    const name=String(data.get("name")||"").trim();
+    const phone=String(data.get("phone")||"").trim();
+    const room=String(data.get("room")||"");
+    const fee=Number(data.get("fee"));
+    const paid=data.get("paid")==="true";
+    const roomInfo=rooms.find(r=>r.name===room);
+
+    if(!name||!phone||!roomInfo||!Number.isFinite(fee)||fee<0){
+        alert("Please enter valid student details.");
+        return;
+    }
+
+    const existing=getStudent(id);
+    const count=roomCount(room);
+    if(count>=roomInfo.capacity&&(!existing||existing.room!==room)){
+        alert("This room is full. Select another room.");
+        return;
+    }
+
+    if(existing){
+        existing.name=name;
+        existing.phone=phone;
+        existing.room=room;
+        existing.fee=fee;
+        existing.paid=paid;
+    }else{
+        students.push({
+            id:Math.max(0,...students.map(s=>s.id))+1,
+            name,phone,room,fee,paid
+        });
+    }
+
+    saveData();
+    closeModal("studentModal");
+    renderAll();
+    alert(existing?"Student updated successfully!":"Student added successfully!");
+});
+
+function deleteStudent(id){
+    const s=getStudent(id);
+    if(!s)return;
+    if(!confirm("Delete student "+s.name+"?"))return;
+
+    students=students.filter(x=>x.id!==id);
+    saveData();
+    renderAll();
+    alert("Student deleted successfully.");
+}
+
+function setPayment(id,paid){
+    const s=getStudent(id);
+    if(!s)return;
+    s.paid=paid;
+    saveData();
+    renderAll();
+}
+
+function openComplaintModal(){
+    if(!students.length){
+        alert("Add a student before registering a complaint.");
+        return;
+    }
+    renderComplaints();
+    document.getElementById("complaintModal").style.display="flex";
+}
+
+document.getElementById("complaintForm").addEventListener("submit",function(e){
+    e.preventDefault();
+    const data=new FormData(this);
+    const issue=String(data.get("issue")||"").trim();
+    const studentId=Number(data.get("studentId"));
+    if(!issue||!getStudent(studentId))return;
+
+    complaints.push({
+        id:Math.max(0,...complaints.map(c=>c.id))+1,
+        studentId,issue,
+        date:new Date().toISOString().slice(0,10),
+        status:"Open"
+    });
+
+    saveData();
+    this.reset();
+    closeModal("complaintModal");
+    renderAll();
+    alert("Complaint registered successfully.");
+});
+
+function resolveComplaint(id){
+    const c=complaints.find(c=>c.id===id);
+    if(!c)return;
+    c.status="Resolved";
+    saveData();
+    renderAll();
+}
+
+function exportCSV(){
+    const rows=[
+        ["ID","Name","Phone","Room","Monthly Fee","Payment Status"],
+        ...students.map(s=>[s.id,s.name,s.phone,s.room,s.fee,s.paid?"Paid":"Pending"])
+    ];
+    const csv=rows.map(row=>row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\r\n");
+    const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url;
+    a.download="hostel-student-report.csv";
+    a.click();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+renderAll();
+</script>
+</body>
+</html>
