@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEEVERSE - T-Shirt Design Store</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+          rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f8f9fc;
+            color: #202124;
+        }
+
+        .navbar {
+            background: #111827;
+            padding: 15px 0;
+        }
+
+        .navbar-brand {
+            font-size: 27px;
+            font-weight: bold;
+            color: #fff !important;
+            letter-spacing: 2px;
+        }
+
+        .navbar-brand span {
+            color: #facc15;
+        }
+
+        .nav-link {
+            color: white !important;
+            margin: 0 8px;
+        }
+
+        .hero {
+            min-height: 470px;
+            background:
+                linear-gradient(90deg, rgba(17,24,39,.92), rgba(17,24,39,.30)),
+                url("https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1600&q=85")
+                center/cover;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(38px, 6vw, 65px);
+            font-weight: 800;
+        }
+
+        .hero h1 span {
+            color: #facc15;
+        }
+
+        .hero p {
+            font-size: 18px;
+            max-width: 520px;
+            line-height: 1.8;
+        }
+
+        .btn-yellow {
+            background: #facc15;
+            color: #111827;
+            border: none;
+            font-weight: bold;
+            padding: 12px 24px;
+            border-radius: 7px;
+        }
+
+        .btn-yellow:hover {
+            background: #eab308;
+            color: #111827;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+            height: 100%;
+            transition: .3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 28px rgba(0,0,0,.10);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 270px;
+            object-fit: cover;
+            background: #eee;
+        }
+
+        .product-info {
+            padding: 18px;
+        }
+
+        .product-info h5 {
+            font-weight: bold;
+        }
+
+        .price {
+            font-size: 20px;
+            color: #111827;
+            font-weight: bold;
+        }
+
+        .auth-section {
+            min-height: 75vh;
+            padding: 55px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background:
+                linear-gradient(120deg, #111827, #374151);
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 470px;
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,.25);
+        }
+
+        .auth-logo {
+            font-size: 30px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .auth-logo span {
+            color: #d4a900;
+        }
+
+        .auth-subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 25px;
+        }
+
+        .form-control, .form-select {
+            padding: 12px;
+            border-radius: 7px;
+        }
+
+        .form-label {
+            font-weight: 600;
+        }
+
+        .auth-switch {
+            color: #2563eb;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .auth-switch:hover {
+            text-decoration: underline;
+        }
+
+        .dashboard-box {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,.06);
+        }
+
+        .feature-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            height: 100%;
+        }
+
+        .feature-box i {
+            font-size: 35px;
+            color: #d4a900;
+        }
+
+        footer {
+            background: #111827;
+            color: white;
+            padding: 28px 0;
+            margin-top: 45px;
+        }
+
+        .hidden { display: none !important; }
+        .product-detail-image { width:100%; max-height:420px; object-fit:cover; border-radius:12px; }
+        .payment-option { border:1px solid #dee2e6; padding:14px; border-radius:9px; display:block; cursor:pointer; margin-bottom:10px; }
+        .payment-option:has(input:checked) { border-color:#d4a900; background:#fffbdf; }
+        .detail-modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,.65); z-index:2000; display:flex; align-items:center; justify-content:center; padding:20px; }
+        .detail-modal { background:#fff; border-radius:16px; max-width:850px; width:100%; max-height:90vh; overflow:auto; padding:24px; }
+
+        .cart-badge {
+            background: #facc15;
+            color: #111827;
+            border-radius: 50%;
+            padding: 2px 7px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                min-height: 400px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .product-card img {
+                height: 220px;
+            }
+
+            .auth-card {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVIGATION -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="#" onclick="showPage('home')">
+            TEE<span>VERSE</span>
+        </a>
+
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMenu">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showPage('home')">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#products"
+                       onclick="showPage('home')">Collections</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#about"
+                       onclick="showPage('home')">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showPage('cart')">
+                        <i class="bi bi-bag"></i> Cart
+                        <span id="cartCount" class="cart-badge">0</span>
+                    </a>
+                </li>
+
+                <li class="nav-item" id="loginNav">
+                    <a class="nav-link" href="#"
+                       onclick="showPage('login')">
+                        <i class="bi bi-person"></i> Login
+                    </a>
+                </li>
+
+                <li class="nav-item hidden" id="accountNav">
+                    <a class="nav-link" href="#" onclick="showPage('dashboard')">
+                        <i class="bi bi-person-circle"></i>
+                        <span id="navCustomerName">Account</span>
+                    </a>
+                </li>
+
+                <li class="nav-item hidden" id="logoutNav">
+                    <button class="btn btn-outline-light btn-sm ms-lg-2"
+                            onclick="logoutCustomer()">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<!-- HOME PAGE -->
+<main id="homePage">
+
+    <section class="hero">
+        <div class="container">
+            <div class="col-lg-7">
+                <p class="text-warning fw-bold mb-2">YOUR STYLE. YOUR STORY.</p>
+                <h1>WEAR YOUR <span>PERSONALITY.</span></h1>
+                <p class="mt-3">
+                    Discover unique T-shirt designs, bold graphics, modern
+                    streetwear and comfortable everyday fashion.
+                </p>
+                <button class="btn btn-yellow mt-3"
+                        onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">
+                    Explore Collection <i class="bi bi-arrow-right"></i>
+                </button>
+                <button class="btn btn-outline-light mt-3 ms-2"
+                        onclick="showPage('register')">
+                    Join Us
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="container py-5">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <i class="bi bi-palette"></i>
+                    <h5 class="mt-3 fw-bold">Unique Designs</h5>
+                    <p class="text-muted mb-0">Express yourself with creative T-shirt styles.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <i class="bi bi-truck"></i>
+                    <h5 class="mt-3 fw-bold">Easy Shopping</h5>
+                    <p class="text-muted mb-0">Explore products and build your shopping cart.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <i class="bi bi-person-check"></i>
+                    <h5 class="mt-3 fw-bold">Customer Account</h5>
+                    <p class="text-muted mb-0">Register or log in to view your account.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUCTS -->
+    <section class="container py-4" id="products">
+        <div class="text-center mb-4">
+            <p class="text-secondary fw-bold">OUR COLLECTION</p>
+            <h2 class="section-title">Trending T-Shirts</h2>
+            <p class="text-muted">Find the perfect style for your everyday look.</p>
+        </div>
+
+        <div class="row g-4" id="productList"></div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="container py-5" id="about">
+        <div class="row align-items-center g-4">
+            <div class="col-md-6">
+                <img class="img-fluid rounded-4"
+                     src="https://images.unsplash.com/photo-1503341504253-dff4815485f1?auto=format&fit=crop&w=900&q=85"
+                     alt="Casual T-shirt fashion">
+            </div>
+            <div class="col-md-6">
+                <p class="text-secondary fw-bold">ABOUT TEEVERSE</p>
+                <h2 class="section-title">Fashion That Speaks For You</h2>
+                <p class="text-muted">
+                    TEEVERSE is a demonstration online T-shirt store designed
+                    for customers who enjoy creative and casual fashion.
+                    Browse our collection, create an account and add products
+                    to your cart.
+                </p>
+                <button class="btn btn-dark"
+                        onclick="showPage('register')">
+                    Create Your Account
+                </button>
+            </div>
+        </div>
+    </section>
+</main>
+
+
+<!-- EXISTING CUSTOMER LOGIN -->
+<section id="loginPage" class="auth-section hidden">
+    <div class="auth-card">
+        <div class="auth-logo">TEE<span>VERSE</span></div>
+        <p class="auth-subtitle">Existing Customer Login</p>
+
+        <form id="loginForm">
+            <div class="mb-3">
+                <label class="form-label" for="loginEmail">Email Address</label>
+                <input class="form-control" type="email" id="loginEmail"
+                       placeholder="Enter your email" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="loginPassword">Password</label>
+                <input class="form-control" type="password" id="loginPassword"
+                       placeholder="Enter your password" required>
+            </div>
+
+            <div class="d-grid mt-4">
+                <button class="btn btn-yellow" type="submit">
+                    <i class="bi bi-box-arrow-in-right"></i> Login
+                </button>
+            </div>
+        </form>
+
+        <div class="text-center mt-4">
+            <p class="mb-2">New customer?</p>
+            <a class="auth-switch" onclick="showPage('register')">
+                Create a New Account
+            </a>
+        </div>
+
+        <div class="text-center mt-3">
+            <a href="#" class="text-secondary"
+               onclick="showPage('home')">← Back to Home</a>
+        </div>
+    </div>
+</section>
+
+
+<!-- NEW CUSTOMER REGISTRATION -->
+<section id="registerPage" class="auth-section hidden">
+    <div class="auth-card">
+        <div class="auth-logo">TEE<span>VERSE</span></div>
+        <p class="auth-subtitle">New Customer Registration</p>
+
+        <form id="registerForm">
+            <div class="mb-3">
+                <label class="form-label" for="registerName">Full Name</label>
+                <input class="form-control" type="text" id="registerName"
+                       placeholder="Enter your full name"
+                       minlength="2" maxlength="80" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="registerEmail">Email Address</label>
+                <input class="form-control" type="email" id="registerEmail"
+                       placeholder="Enter your email address" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="registerPassword">Password</label>
+                <input class="form-control" type="password" id="registerPassword"
+                       placeholder="Create a password"
+                       minlength="8" required>
+                <small class="text-muted">Use at least 8 characters.</small>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="confirmPassword">
+                    Confirm Password
+                </label>
+                <input class="form-control" type="password" id="confirmPassword"
+                       placeholder="Re-enter your password" minlength="8" required>
+            </div>
+
+            <div class="d-grid mt-4">
+                <button class="btn btn-yellow" type="submit">
+                    <i class="bi bi-person-plus"></i> Create Account
+                </button>
+            </div>
+        </form>
+
+        <div class="text-center mt-4">
+            <p class="mb-2">Already have an account?</p>
+            <a class="auth-switch" onclick="showPage('login')">
+                Login as Existing Customer
+            </a>
+        </div>
+
+        <div class="text-center mt-3">
+            <a href="#" class="text-secondary"
+               onclick="showPage('home')">← Back to Home</a>
+        </div>
+    </div>
+</section>
+
+
+<!-- CUSTOMER DASHBOARD -->
+<section id="dashboardPage" class="container py-5 hidden">
+    <div class="dashboard-box">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <p class="text-secondary fw-bold mb-1">CUSTOMER DASHBOARD</p>
+                <h2 class="section-title">
+                    Welcome, <span id="customerName"></span>!
+                </h2>
+                <p class="text-muted">
+                    You are logged in to your TEEVERSE customer account.
+                </p>
+            </div>
+
+            <button class="btn btn-outline-danger" onclick="logoutCustomer()">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </button>
+        </div>
+
+        <hr>
+
+        <div class="row g-3 mt-2">
+            <div class="col-md-6">
+                <div class="p-3 border rounded-3">
+                    <i class="bi bi-envelope me-2"></i>
+                    <strong>Email:</strong>
+                    <span id="customerEmail"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-3 border rounded-3">
+                    <i class="bi bi-bag me-2"></i>
+                    <strong>Items in Cart:</strong>
+                    <span id="dashboardCartCount">0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <button class="btn btn-dark" onclick="showPage('home')">
+                Continue Shopping
+            </button>
+            <button class="btn btn-outline-dark ms-2" onclick="showPage('cart')">
+                View Cart
+            </button>
+        </div>
+    </div>
+</section>
+
+
+<!-- SHOPPING CART -->
+<section id="cartPage" class="container py-5 hidden">
+    <h2 class="section-title">Your Shopping Cart</h2>
+    <p class="text-muted">Review your selected T-shirts.</p>
+
+    <div class="dashboard-box mt-4">
+        <div id="cartItems"></div>
+
+        <hr>
+        <div class="d-flex justify-content-between align-items-center">
+            <h4>Total: <span id="cartTotal">₹0</span></h4>
+            <button class="btn btn-yellow" onclick="checkout()">
+                Proceed to Checkout
+            </button>
+        </div>
+        <button class="btn btn-outline-dark mt-3" onclick="showPage('home')">
+            Continue Shopping
+        </button>
+    </div>
+</section>
+
+
+<!-- PRODUCT DETAILS MODAL -->
+<div id="productModal" class="detail-modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="detailName" onclick="if(event.target===this) closeProduct()">
+  <div class="detail-modal">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h3 class="fw-bold mb-0">Product Details</h3>
+      <button class="btn btn-outline-secondary" onclick="closeProduct()" aria-label="Close">&times;</button>
+    </div>
+    <div id="productDetails"></div>
+  </div>
+</div>
+
+<!-- PAYMENT / CHECKOUT PAGE -->
+<section id="paymentPage" class="container py-5 hidden">
+  <h2 class="section-title">Secure Checkout</h2>
+  <p class="text-muted">Enter delivery details and choose a demo payment method.</p>
+  <div class="row g-4 mt-1">
+    <div class="col-lg-7">
+      <div class="dashboard-box">
+        <form id="paymentForm">
+          <h5 class="fw-bold mb-3">Delivery Information</h5>
+          <div class="mb-3"><label class="form-label" for="deliveryName">Full Name</label><input class="form-control" id="deliveryName" required maxlength="80"></div>
+          <div class="mb-3"><label class="form-label" for="deliveryPhone">WhatsApp Number</label>
+            <input class="form-control" id="deliveryPhone" type="tel" pattern="[0-9+() -]{7,20}" required placeholder="e.g. +91 9876543210">
+            <small class="text-muted">Include country code for WhatsApp (India: +91).</small></div>
+          <div class="mb-3"><label class="form-label" for="deliveryAddress">Delivery Address</label><textarea class="form-control" id="deliveryAddress" rows="3" required maxlength="300" placeholder="House number, street, city, PIN code"></textarea></div>
+          <hr>
+          <h5 class="fw-bold mb-3">Payment Method</h5>
+          <label class="payment-option"><input type="radio" name="paymentMethod" value="UPI" required> <i class="bi bi-phone me-2"></i><strong>UPI</strong><div class="small text-muted ms-4">Demo selection only — no money is transferred.</div></label>
+          <label class="payment-option"><input type="radio" name="paymentMethod" value="Credit/Debit Card"> <i class="bi bi-credit-card me-2"></i><strong>Credit / Debit Card</strong><div class="small text-muted ms-4">Do not enter real card details in this demo.</div></label>
+          <label class="payment-option"><input type="radio" name="paymentMethod" value="Cash on Delivery"> <i class="bi bi-cash-coin me-2"></i><strong>Cash on Delivery</strong></label>
+          <div class="alert alert-warning small mt-3">Demo checkout only. This page does not process real payments. A production store must use a trusted payment gateway and server-side order verification.</div>
+          <button type="submit" class="btn btn-yellow w-100 mt-2"><i class="bi bi-lock"></i> Place Demo Order</button>
+        </form>
+      </div>
+    </div>
+    <div class="col-lg-5"><div class="dashboard-box"><h5 class="fw-bold">Order Summary</h5><div id="paymentSummary" class="mt-3"></div><hr><div class="d-flex justify-content-between"><strong>Total</strong><strong id="paymentTotal">₹0</strong></div><button class="btn btn-outline-dark w-100 mt-3" onclick="showPage('cart')">Back to Cart</button></div></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="container text-center">
+        <h4 class="fw-bold">TEE<span class="text-warning">VERSE</span></h4>
+        <p class="mb-1">Wear Your Personality.</p>
+        <small class="text-secondary">
+            © 2026 TEEVERSE T-Shirt Store. Demo website.
+        </small>
+    </div>
+</footer>
+
+
+<script>
+    // -------------------------------
+    // DEMO CUSTOMER ACCOUNT STORAGE
+    // -------------------------------
+
+    const USERS_KEY = "teeverse_demo_users";
+    const SESSION_KEY = "teeverse_demo_session";
+    const CART_KEY = "teeverse_demo_cart";
+
+    function getUsers() {
+        try {
+            const data = JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+            return Array.isArray(data) ? data : [];
+        } catch {
+            return [];
+        }
+    }
+
+    function saveUsers(users) {
+        localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    }
+
+    function getCurrentUser() {
+        const email = localStorage.getItem(SESSION_KEY);
+        if (!email) return null;
+
+        return getUsers().find(
+            user => user.email === email
+        ) || null;
+    }
+
+
+    // -------------------------------
+    // PAGE NAVIGATION
+    // -------------------------------
+
+    const pages = [
+        "home",
+        "login",
+        "register",
+        "dashboard",
+        "cart",
+        "payment"
+    ];
+
+    function showPage(page) {
+        if (!pages.includes(page)) page = "home";
+
+        if (page === "dashboard" && !getCurrentUser()) {
+            alert("Please log in to view your customer dashboard.");
+            page = "login";
+        }
+
+        if (page === "cart") renderCart();
+        if (page === "payment") renderPaymentSummary();
+
+        document.getElementById("homePage").classList.toggle(
+            "hidden", page !== "home"
+        );
+
+        pages.filter(p => p !== "home").forEach(p => {
+            document.getElementById(p + "Page").classList.toggle(
+                "hidden", p !== page
+            );
+        });
+
+        if (page === "dashboard") updateDashboard();
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+
+    // -------------------------------
+    // UPDATE NAVIGATION FOR LOGIN
+    // -------------------------------
+
+    function updateNavigation() {
+        const user = getCurrentUser();
+
+        document.getElementById("loginNav").classList.toggle(
+            "hidden", !!user
+        );
+
+        document.getElementById("accountNav").classList.toggle(
+            "hidden", !user
+        );
+
+        document.getElementById("logoutNav").classList.toggle(
+            "hidden", !user
+        );
+
+        if (user) {
+            document.getElementById("navCustomerName").textContent =
+                user.name.split(" ")[0];
+        }
+
+        updateCartCount();
+    }
+
+
+    // -------------------------------
+    // NEW CUSTOMER REGISTRATION
+    // -------------------------------
+
+    document.getElementById("registerForm").addEventListener(
+        "submit", function(event) {
+            event.preventDefault();
+
+            const name = document.getElementById("registerName")
+                .value.trim();
+
+            const email = document.getElementById("registerEmail")
+                .value.trim().toLowerCase();
+
+            const password = document.getElementById("registerPassword")
+                .value;
+
+            const confirmPassword = document.getElementById("confirmPassword")
+                .value;
+
+            if (name.length < 2) {
+                alert("Please enter your full name.");
+                return;
+            }
+
+            if (password.length < 8) {
+                alert("Password must contain at least 8 characters.");
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                alert("Passwords do not match.");
+                return;
+            }
+
+            const users = getUsers();
+
+            if (users.some(user => user.email === email)) {
+                alert("An account with this email already exists. Please log in.");
+                showPage("login");
+                document.getElementById("loginEmail").value = email;
+                return;
+            }
+
+            // Demo only: passwords are stored locally and are NOT secure.
+            users.push({
+                name: name,
+                email: email,
+                password: password
+            });
+
+            saveUsers(users);
+
+            localStorage.setItem(SESSION_KEY, email);
+
+            document.getElementById("registerForm").reset();
+
+            updateNavigation();
+            updateDashboard();
+
+            alert("Account created successfully! Welcome to TEEVERSE.");
+            showPage("dashboard");
+        }
+    );
+
+
+    // -------------------------------
+    // EXISTING CUSTOMER LOGIN
+    // -------------------------------
+
+    document.getElementById("loginForm").addEventListener(
+        "submit", function(event) {
+            event.preventDefault();
+
+            const email = document.getElementById("loginEmail")
+                .value.trim().toLowerCase();
+
+            const password = document.getElementById("loginPassword")
+                .value;
+
+            const user = getUsers().find(
+                account =>
+                    account.email === email &&
+                    account.password === password
+            );
+
+            if (!user) {
+                alert("Invalid email or password. Please try again or register.");
+                return;
+            }
+
+            localStorage.setItem(SESSION_KEY, user.email);
+
+            document.getElementById("loginForm").reset();
+
+            updateNavigation();
+            updateDashboard();
+
+            alert("Login successful! Welcome back, " + user.name + ".");
+            showPage("dashboard");
+        }
+    );
+
+
+    // -------------------------------
+    // CUSTOMER LOGOUT
+    // -------------------------------
+
+    function logoutCustomer() {
+        const user = getCurrentUser();
+
+        if (!user) {
+            showPage("home");
+            return;
+        }
+
+        if (confirm("Are you sure you want to logout?")) {
+            localStorage.removeItem(SESSION_KEY);
+
+            updateNavigation();
+
+            alert("You have been logged out successfully.");
+            showPage("home");
+        }
+    }
+
+
+    // -------------------------------
+    // CUSTOMER DASHBOARD
+    // -------------------------------
+
+    function updateDashboard() {
+        const user = getCurrentUser();
+
+        if (!user) return;
+
+        document.getElementById("customerName").textContent = user.name;
+        document.getElementById("customerEmail").textContent = user.email;
+        document.getElementById("dashboardCartCount").textContent =
+            getCart().reduce((sum, item) => sum + item.quantity, 0);
+    }
+
+
+    // -------------------------------
+    // PRODUCT COLLECTION
+    // -------------------------------
+
+    const products = [
+        {
+            id: 1,
+            name: "Classic White Tee",
+            price: 499,
+            category: "Minimal",
+            image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=700&q=80"
+        },
+        {
+            id: 2,
+            name: "Urban Streetwear",
+            price: 699,
+            category: "Streetwear",
+            image: "https://images.unsplash.com/photo-1523398002811-999ca8dec234?auto=format&fit=crop&w=700&q=80"
+        },
+        {
+            id: 3,
+            name: "Casual Essential",
+            price: 549,
+            category: "Casual",
+            image: "https://images.unsplash.com/photo-1503341504253-dff4815485f1?auto=format&fit=crop&w=700&q=80"
+        },
+        {
+            id: 4,
+            name: "Modern Graphic Tee",
+            price: 799,
+            category: "Graphic",
+            image: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=700&q=80"
+        },
+        {
+            id: 5,
+            name: "Weekend Style",
+            price: 599,
+            category: "Casual",
+            image: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=700&q=80"
+        },
+        {
+            id: 6,
+            name: "Premium Everyday Tee",
+            price: 899,
+            category: "Minimal",
+            image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=700&q=80"
+        }
+    ];
+
+    function renderProducts() {
+        const productList = document.getElementById("productList");
+
+        productList.innerHTML = products.map(product => `
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="product-card">
+                    <img
+                        src="${product.image}"
+                        alt="${product.name}"
+                        loading="lazy"
+                        onerror="this.onerror=null;this.src='https://placehold.co/600x500?text=T-Shirt';"
+                    >
+
+                    <div class="product-info">
+                        <small class="text-secondary">${product.category}</small>
+                        <h5 class="mt-2">${product.name}</h5>
+
+                        <div class="d-flex justify-content-between
+                                    align-items-center mt-3">
+                            <span class="price">₹${product.price}</span>
+
+                            <div class="d-flex gap-2 flex-wrap justify-content-end">
+                                <button class="btn btn-outline-dark btn-sm" onclick="viewProduct(${product.id})">
+                                    <i class="bi bi-eye"></i> View Product
+                                </button>
+                                <button class="btn btn-dark btn-sm" onclick="addToCart(${product.id})">
+                                    <i class="bi bi-bag-plus"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join("");
+    }
+
+
+    // -------------------------------
+    // PRODUCT DETAILS / VIEW PRODUCT
+    // -------------------------------
+    function viewProduct(productId) {
+        const product = products.find(p => p.id === productId);
+        if (!product) return;
+        document.getElementById("productDetails").innerHTML = `
+          <div class="row g-4 align-items-center">
+            <div class="col-md-6"><img class="product-detail-image" src="${product.image}" alt="${product.name}" onerror="this.onerror=null;this.src='https://placehold.co/600x500?text=T-Shirt';"></div>
+            <div class="col-md-6"><small class="text-secondary fw-bold">${product.category}</small><h2 id="detailName" class="fw-bold mt-2">${product.name}</h2><p class="price fs-3">₹${product.price.toLocaleString("en-IN")}</p><p class="text-muted">Comfortable everyday T-shirt with a modern style. A great choice for casual wear and streetwear looks.</p><ul><li>Category: ${product.category}</li><li>Easy everyday styling</li><li>Price shown in Indian Rupees</li></ul><button class="btn btn-yellow" onclick="addToCart(${product.id});closeProduct()"><i class="bi bi-bag-plus"></i> Add to Cart</button></div>
+          </div>`;
+        document.getElementById("productModal").classList.remove("hidden");
+    }
+    function closeProduct() { document.getElementById("productModal").classList.add("hidden"); }
+
+    // -------------------------------
+    // SHOPPING CART
+    // -------------------------------
+
+    function getCart() {
+        try {
+            const cart = JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+            return Array.isArray(cart) ? cart : [];
+        } catch {
+            return [];
+        }
+    }
+
+    function saveCart(cart) {
+        localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    }
+
+    function addToCart(productId) {
+        const product = products.find(p => p.id === productId);
+        if (!product) return;
+
+        const cart = getCart();
+        const existing = cart.find(item => item.id === productId);
+
+        if (existing) {
+            existing.quantity++;
+        } else {
+            cart.push({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                image: product.image,
+                quantity: 1
+            });
+        }
+
+        saveCart(cart);
+        updateCartCount();
+        alert(product.name + " added to your cart!");
+    }
+
+    function updateCartCount() {
+        const quantity = getCart().reduce(
+            (sum, item) => sum + item.quantity, 0
+        );
+
+        document.getElementById("cartCount").textContent = quantity;
+
+        const dashboardCount = document.getElementById("dashboardCartCount");
+        if (dashboardCount) {
+            dashboardCount.textContent = quantity;
+        }
+    }
+
+    function renderCart() {
+        const cart = getCart();
+        const cartItems = document.getElementById("cartItems");
+
+        if (cart.length === 0) {
+            cartItems.innerHTML = `
+                <div class="text-center py-5">
+                    <i class="bi bi-bag-x fs-1 text-secondary"></i>
+                    <h5 class="mt-3">Your cart is empty</h5>
+                    <p class="text-muted">Add a T-shirt to get started.</p>
+                </div>
+            `;
+
+            document.getElementById("cartTotal").textContent = "₹0";
+            return;
+        }
+
+        let total = 0;
+
+        cartItems.innerHTML = cart.map(item => {
+            total += item.price * item.quantity;
+
+            return `
+                <div class="row align-items-center g-3 py-3 border-bottom">
+                    <div class="col-3 col-md-2">
+                        <img src="${item.image}" alt="${item.name}"
+                             class="img-fluid rounded"
+                             onerror="this.onerror=null;this.src='https://placehold.co/200x200?text=T-Shirt';">
+                    </div>
+
+                    <div class="col-9 col-md-4">
+                        <h6 class="fw-bold">${item.name}</h6>
+                        <span>₹${item.price}</span>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <button class="btn btn-outline-secondary btn-sm"
+                            onclick="changeQuantity(${item.id}, -1)">−</button>
+
+                        <span class="mx-2">${item.quantity}</span>
+
+                        <button class="btn btn-outline-secondary btn-sm"
+                            onclick="changeQuantity(${item.id}, 1)">+</button>
+                    </div>
+
+                    <div class="col-6 col-md-3 text-end">
+                        <strong>₹${item.price * item.quantity}</strong>
+                        <button class="btn btn-link text-danger"
+                            onclick="removeFromCart(${item.id})"
+                            aria-label="Remove ${item.name}">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join("");
+
+        document.getElementById("cartTotal").textContent =
+            "₹" + total.toLocaleString("en-IN");
+    }
+
+    function changeQuantity(productId, change) {
+        const cart = getCart();
+        const item = cart.find(p => p.id === productId);
+
+        if (!item) return;
+
+        item.quantity += change;
+
+        const updatedCart = cart.filter(p => p.quantity > 0);
+
+        saveCart(updatedCart);
+        renderCart();
+        updateCartCount();
+    }
+
+    function removeFromCart(productId) {
+        saveCart(getCart().filter(item => item.id !== productId));
+        renderCart();
+        updateCartCount();
+    }
+
+    function checkout() {
+        if (getCart().length === 0) {
+            alert("Your cart is empty. Please add products first.");
+            return;
+        }
+        const user = getCurrentUser();
+        if (!user) {
+            alert("Please log in or register before proceeding to checkout.");
+            showPage("login");
+            return;
+        }
+        document.getElementById("deliveryName").value = user.name;
+        showPage("payment");
+    }
+
+    function renderPaymentSummary() {
+        const cart = getCart();
+        let total = 0;
+        document.getElementById("paymentSummary").innerHTML = cart.map(item => {
+            total += item.price * item.quantity;
+            return `<div class="d-flex align-items-center gap-3 mb-3"><img src="${item.image}" alt="${item.name}" style="width:60px;height:60px;object-fit:cover;border-radius:8px" onerror="this.onerror=null;this.src='https://placehold.co/100x100?text=Tee';"><div class="flex-grow-1"><div class="fw-semibold">${item.name}</div><small class="text-muted">Qty: ${item.quantity}</small></div><strong>₹${(item.price * item.quantity).toLocaleString("en-IN")}</strong></div>`;
+        }).join("") || '<p class="text-muted">Your cart is empty.</p>';
+        document.getElementById("paymentTotal").textContent = "₹" + total.toLocaleString("en-IN");
+    }
+
+    document.getElementById("paymentForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        if (!getCurrentUser()) {
+            alert("Please log in to place an order.");
+            showPage("login");
+            return;
+        }
+
+        const cart = getCart();
+        if (!cart.length) {
+            alert("Your cart is empty.");
+            showPage("cart");
+            return;
+        }
+
+        const method = document.querySelector('input[name="paymentMethod"]:checked');
+        if (!method) {
+            alert("Please choose a payment method.");
+            return;
+        }
+
+        const customerName = document.getElementById("deliveryName").value.trim();
+        const whatsappInput = document.getElementById("deliveryPhone").value.trim();
+        const address = document.getElementById("deliveryAddress").value.trim();
+
+        // wa.me needs digits only, including the country calling code.
+        let whatsappNumber = whatsappInput.replace(/\D/g, "");
+        if (whatsappNumber.startsWith("00")) whatsappNumber = whatsappNumber.slice(2);
+        if (whatsappNumber.length === 10) whatsappNumber = "91" + whatsappNumber;
+        else if (whatsappNumber.startsWith("0") && whatsappNumber.length === 11) {
+            whatsappNumber = "91" + whatsappNumber.slice(1);
+        }
+
+        if (whatsappNumber.length < 10 || whatsappNumber.length > 15) {
+            alert("Enter a valid WhatsApp number with country code, e.g. +91 9876543210.");
+            document.getElementById("deliveryPhone").focus();
+            return;
+        }
+
+        const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+        const orderNumber = "TV" + Date.now().toString().slice(-8);
+        const orderDate = new Date();
+        const currency = amount => "₹" + Number(amount).toLocaleString("en-IN");
+
+        // This demo does not verify or collect online payments.
+        const paymentStatus = method.value === "Cash on Delivery"
+            ? "Pay on delivery (COD)"
+            : "Payment not verified — demo checkout";
+
+        const itemLines = cart.map((item, index) =>
+            `${index + 1}. ${item.name}\n   Qty: ${item.quantity} × ${currency(item.price)} = ${currency(item.price * item.quantity)}`
+        ).join("\n");
+
+        const billMessage =
+`🧾 *TEEVERSE — ORDER BILL*
+━━━━━━━━━━━━━━━━━━
+*Order No:* ${orderNumber}
+*Date:* ${orderDate.toLocaleString("en-IN")}
+*Customer:* ${customerName}
+
+*ORDER DETAILS*
+${itemLines}
+
+━━━━━━━━━━━━━━━━━━
+*TOTAL: ${currency(total)}*
+*Payment Method:* ${method.value}
+*Payment Status:* ${paymentStatus}
+
+*Delivery Address:*
+${address}
+
+Thank you for shopping with TEEVERSE! 👕
+Please keep this message as your order bill.`;
+
+        const lastOrder = {
+            orderNumber,
+            customer: getCurrentUser().email,
+            customerName,
+            whatsappNumber,
+            items: cart,
+            total,
+            method: method.value,
+            paymentStatus,
+            address,
+            createdAt: orderDate.toISOString()
+        };
+        localStorage.setItem("teeverse_demo_last_order", JSON.stringify(lastOrder));
+
+        // Opens WhatsApp with the invoice text. The customer must press Send.
+        const whatsappUrl = "https://wa.me/" + whatsappNumber + "?text=" + encodeURIComponent(billMessage);
+        const whatsappWindow = window.open(whatsappUrl, "_blank");
+        if (!whatsappWindow) window.location.href = whatsappUrl;
+
+        alert("Your bill is prepared in WhatsApp. Review it and press Send. No real payment was processed by this demo.");
+
+        saveCart([]);
+        document.getElementById("paymentForm").reset();
+        updateCartCount();
+        showPage("home");
+    });
+
+    // -------------------------------
+    // INITIALIZE WEBSITE
+    // -------------------------------
+
+    renderProducts();
+    updateNavigation();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
+i need the payment module to whatsapp give me the code
