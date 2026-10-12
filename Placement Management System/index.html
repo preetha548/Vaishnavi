@@ -1,0 +1,820 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Placement Management System</title>
+<style>
+:root {
+  --primary: #4f46e5;
+  --dark: #172033;
+  --bg: #f4f6fb;
+  --muted: #64748b;
+  --green: #16a34a;
+  --orange: #ea580c;
+  --red: #dc2626;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: #1e293b;
+}
+.layout { display: flex; min-height: 100vh; }
+.sidebar {
+  width: 240px;
+  background: var(--dark);
+  color: white;
+  padding: 25px 16px;
+  flex-shrink: 0;
+}
+.brand { font-size: 21px; font-weight: bold; margin: 0 0 35px 8px; }
+.brand span { color: #a5b4fc; }
+.sidebar button {
+  width: 100%;
+  background: transparent;
+  color: #cbd5e1;
+  border: 0;
+  text-align: left;
+  padding: 14px;
+  margin-bottom: 7px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.sidebar button:hover, .sidebar button.active {
+  background: #3730a3;
+  color: white;
+}
+main { flex: 1; min-width: 0; padding: 28px; }
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 26px;
+}
+h1 { font-size: 27px; margin: 0 0 8px; }
+h2 { font-size: 19px; margin: 0 0 18px; }
+p { color: var(--muted); }
+.topbar p { margin: 0; font-size: 14px; }
+button, input, select { font: inherit; }
+.btn {
+  border: 0;
+  border-radius: 7px;
+  padding: 11px 15px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+}
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: #4338ca; }
+.btn-light { background: #e2e8f0; color: #334155; }
+.btn-danger { background: #fee2e2; color: #b91c1c; }
+.btn-success { background: #dcfce7; color: #166534; }
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.stat, .panel {
+  background: white;
+  border-radius: 12px;
+  padding: 21px;
+  box-shadow: 0 2px 8px #0f172a0a;
+}
+.stat-label { color: var(--muted); font-size: 13px; }
+.stat-value { font-size: 29px; font-weight: bold; margin: 12px 0 7px; }
+.stat-note { font-size: 12px; color: var(--muted); }
+.stat-icon { float: right; font-size: 25px; }
+.content-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+.chart-row { margin: 18px 0; }
+.chart-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+.track { height: 10px; background: #eef2ff; border-radius: 20px; overflow: hidden; }
+.bar { height: 100%; border-radius: 20px; transition: width .3s; }
+.bar.blue { background: #4f46e5; }
+.bar.green { background: #16a34a; }
+.bar.orange { background: #f59e0b; }
+.bar.pink { background: #ec4899; }
+.bar.cyan { background: #0891b2; }
+.section { display: none; }
+.section.active { display: block; }
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+}
+.field { display: flex; flex-direction: column; gap: 7px; }
+.field label { font-size: 13px; font-weight: 600; }
+.field input, .field select, .filters input, .filters select {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  background: white;
+  min-width: 0;
+}
+.field input:focus, .field select:focus {
+  outline: 2px solid #c7d2fe;
+  border-color: var(--primary);
+}
+.form-actions { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+.table-panel { margin-top: 20px; }
+.filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 17px;
+}
+.filters input { flex: 1; min-width: 180px; }
+.filters select { width: auto; min-width: 150px; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td {
+  padding: 14px 12px;
+  text-align: left;
+  border-bottom: 1px solid #edf0f5;
+  white-space: nowrap;
+}
+th { color: var(--muted); background: #f8fafc; font-weight: 600; }
+tbody tr:hover { background: #fafaff; }
+.pill { padding: 5px 9px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+.pill.placed { color: #166534; background: #dcfce7; }
+.pill.pending { color: #92400e; background: #fef3c7; }
+.pill.not-placed { color: #b91c1c; background: #fee2e2; }
+.actions { display: flex; gap: 6px; }
+.actions .btn { padding: 7px 9px; }
+.report-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+.report-card {
+  padding: 18px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+.report-card strong { display: block; font-size: 24px; margin: 12px 0; }
+.empty { text-align: center; color: var(--muted); padding: 25px; }
+.footer { color: var(--muted); text-align: center; font-size: 12px; margin-top: 25px; }
+@media (max-width: 1000px) {
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 700px) {
+  .layout { display: block; }
+  .sidebar { width: 100%; padding: 14px; }
+  .brand { margin: 0 0 12px; }
+  .sidebar nav { display: flex; gap: 5px; overflow-x: auto; }
+  .sidebar button { width: auto; flex-shrink: 0; margin: 0; padding: 10px; }
+  main { padding: 16px; }
+  .content-grid { grid-template-columns: 1fr; }
+  .form-grid, .report-cards { grid-template-columns: 1fr; }
+  h1 { font-size: 23px; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">🎓 Place<span>Track</span></div>
+    <nav>
+      <button class="active" data-section="dashboard">📊 Dashboard</button>
+      <button data-section="students">👨‍🎓 Students</button>
+      <button data-section="addStudent">➕ Add Student</button>
+      <button data-section="reports">📈 Reports</button>
+    </nav>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <div>
+        <h1 id="pageTitle">Analytics Dashboard</h1>
+        <p>Placement statistics, student performance and reports</p>
+      </div>
+      <button class="btn btn-primary" id="topAddBtn">+ Add Student</button>
+    </div>
+
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="section active">
+      <div class="stats">
+        <div class="stat">
+          <span class="stat-icon">👨‍🎓</span>
+          <div class="stat-label">Total Students</div>
+          <div class="stat-value" id="totalStudents">0</div>
+          <div class="stat-note">Registered candidates</div>
+        </div>
+        <div class="stat">
+          <span class="stat-icon">✅</span>
+          <div class="stat-label">Students Placed</div>
+          <div class="stat-value" id="placedStudents">0</div>
+          <div class="stat-note">Successfully placed</div>
+        </div>
+        <div class="stat">
+          <span class="stat-icon">⏳</span>
+          <div class="stat-label">Not Yet Placed</div>
+          <div class="stat-value" id="pendingStudents">0</div>
+          <div class="stat-note">Awaiting placement</div>
+        </div>
+        <div class="stat">
+          <span class="stat-icon">📈</span>
+          <div class="stat-label">Placement Rate</div>
+          <div class="stat-value" id="placementRate">0%</div>
+          <div class="stat-note">Placed / total students</div>
+        </div>
+      </div>
+
+      <div class="content-grid">
+        <div class="panel">
+          <h2>Department-wise Placement</h2>
+          <div id="departmentChart"></div>
+        </div>
+        <div class="panel">
+          <h2>Placement Status Analysis</h2>
+          <div id="statusChart"></div>
+          <div style="margin-top:24px">
+            <h2>Average Salary Package</h2>
+            <div class="stat-value" id="averageSalary">₹0 LPA</div>
+            <p style="font-size:12px">Average package of placed students</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Recent Student Records</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Name</th><th>Department</th><th>Company</th><th>Status</th></tr>
+            </thead>
+            <tbody id="recentTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- STUDENT MANAGEMENT -->
+    <section id="students" class="section">
+      <div class="panel">
+        <h2>Student Records</h2>
+        <div class="filters">
+          <input id="searchInput" placeholder="Search name, email, company or roll number">
+          <select id="departmentFilter">
+            <option value="">All Departments</option>
+            <option>CSE</option><option>IT</option><option>ECE</option>
+            <option>EEE</option><option>Mechanical</option><option>Civil</option>
+            <option>MBA</option><option>Other</option>
+          </select>
+          <select id="statusFilter">
+            <option value="">All Statuses</option>
+            <option>Placed</option><option>Pending</option><option>Not Placed</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Roll No.</th><th>Student Name</th><th>Department</th>
+                <th>Company</th><th>Package (LPA)</th><th>Status</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="studentsTable"></tbody>
+          </table>
+        </div>
+        <p id="studentCount"></p>
+      </div>
+    </section>
+
+    <!-- ADD / EDIT STUDENT -->
+    <section id="addStudent" class="section">
+      <div class="panel">
+        <h2 id="formTitle">Register New Student</h2>
+        <form id="studentForm">
+          <input type="hidden" id="editId">
+          <div class="form-grid">
+            <div class="field">
+              <label for="roll">Roll Number *</label>
+              <input id="roll" required placeholder="e.g. CS2026001">
+            </div>
+            <div class="field">
+              <label for="name">Student Name *</label>
+              <input id="name" required placeholder="Full name">
+            </div>
+            <div class="field">
+              <label for="email">Email *</label>
+              <input id="email" type="email" required placeholder="student@example.com">
+            </div>
+            <div class="field">
+              <label for="department">Department *</label>
+              <select id="department" required>
+                <option value="">Select department</option>
+                <option>CSE</option><option>IT</option><option>ECE</option>
+                <option>EEE</option><option>Mechanical</option><option>Civil</option>
+                <option>MBA</option><option>Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="company">Company</label>
+              <input id="company" placeholder="Company name">
+            </div>
+            <div class="field">
+              <label for="salary">Package (LPA)</label>
+              <input id="salary" type="number" min="0" max="1000" step="0.1" value="0">
+            </div>
+            <div class="field">
+              <label for="status">Placement Status *</label>
+              <select id="status" required>
+                <option>Pending</option>
+                <option>Placed</option>
+                <option>Not Placed</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="graduationYear">Graduation Year</label>
+              <input id="graduationYear" type="number" min="2000" max="2100" value="2027">
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" type="submit" id="saveBtn">Save Student</button>
+            <button class="btn btn-light" type="button" id="cancelBtn">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- REPORTS -->
+    <section id="reports" class="section">
+      <div class="panel" style="margin-bottom:20px">
+        <h2>Placement Reports</h2>
+        <p>Generate reports from the current student records. Export the results as CSV files for Excel.</p>
+        <div class="form-actions">
+          <button class="btn btn-primary" id="exportStudents">⬇ Export Student Report</button>
+          <button class="btn btn-success" id="exportCompanies">⬇ Export Company Report</button>
+          <button class="btn btn-light" id="printReport">🖨 Print Report</button>
+        </div>
+      </div>
+
+      <div class="report-cards">
+        <div class="report-card">
+          <div class="stat-label">Overall Placement Rate</div>
+          <strong id="reportRate">0%</strong>
+          <span class="stat-note">Students successfully placed</span>
+        </div>
+        <div class="report-card">
+          <div class="stat-label">Highest Package</div>
+          <strong id="highestPackage">₹0 LPA</strong>
+          <span class="stat-note" id="highestStudent">No placement data</span>
+        </div>
+        <div class="report-card">
+          <div class="stat-label">Companies Participated</div>
+          <strong id="companyCount">0</strong>
+          <span class="stat-note">Unique companies in records</span>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-bottom:20px">
+        <h2>Company-wise Placement Report</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Company</th><th>Placed Students</th><th>Average Package</th><th>Highest Package</th></tr>
+            </thead>
+            <tbody id="companyTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Department-wise Summary</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Department</th><th>Total Students</th><th>Placed</th><th>Pending / Other</th><th>Placement Rate</th></tr>
+            </thead>
+            <tbody id="departmentTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">PlaceTrack · Placement Management System</div>
+  </main>
+</div>
+
+<script>
+const STORAGE_KEY = "placetrack_students_v1";
+
+const sampleStudents = [
+  {id:1, roll:"CS2026001", name:"Arun Kumar", email:"arun@example.com", department:"CSE", company:"TCS", salary:6.5, status:"Placed", graduationYear:2027},
+  {id:2, roll:"IT2026002", name:"Priya Sharma", email:"priya@example.com", department:"IT", company:"Infosys", salary:5.5, status:"Placed", graduationYear:2027},
+  {id:3, roll:"EC2026003", name:"Rahul Raj", email:"rahul@example.com", department:"ECE", company:"", salary:0, status:"Pending", graduationYear:2027},
+  {id:4, roll:"CS2026004", name:"Divya S", email:"divya@example.com", department:"CSE", company:"Accenture", salary:7.2, status:"Placed", graduationYear:2027},
+  {id:5, roll:"ME2026005", name:"Karthik M", email:"karthik@example.com", department:"Mechanical", company:"", salary:0, status:"Not Placed", graduationYear:2027},
+  {id:6, roll:"IT2026006", name:"Sneha R", email:"sneha@example.com", department:"IT", company:"Wipro", salary:4.5, status:"Placed", graduationYear:2027},
+  {id:7, roll:"EC2026007", name:"Vijay P", email:"vijay@example.com", department:"ECE", company:"", salary:0, status:"Pending", graduationYear:2027},
+  {id:8, roll:"EE2026008", name:"Meena K", email:"meena@example.com", department:"EEE", company:"", salary:0, status:"Pending", graduationYear:2027},
+  {id:9, roll:"CS2026009", name:"Naveen B", email:"naveen@example.com", department:"CSE", company:"Zoho", salary:8, status:"Placed", graduationYear:2027}
+];
+
+let students = loadStudents();
+
+function loadStudents() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved === null ? sampleStudents.map(s => ({...s})) : JSON.parse(saved);
+  } catch (error) {
+    return sampleStudents.map(s => ({...s}));
+  }
+}
+
+function saveStudents() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
+}
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, ch => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+  })[ch]);
+}
+
+function money(value) {
+  return "₹" + Number(value || 0).toLocaleString("en-IN", {
+    maximumFractionDigits: 2
+  }) + " LPA";
+}
+
+function placedStudents() {
+  return students.filter(s => s.status === "Placed");
+}
+
+function placementRate(list = students) {
+  return list.length
+    ? Math.round(list.filter(s => s.status === "Placed").length / list.length * 100)
+    : 0;
+}
+
+function statusPill(status) {
+  const cls = status === "Placed" ? "placed"
+    : status === "Pending" ? "pending" : "not-placed";
+  return `<span class="pill ${cls}">${escapeHTML(status)}</span>`;
+}
+
+function showSection(id) {
+  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.querySelectorAll(".sidebar button").forEach(b =>
+    b.classList.toggle("active", b.dataset.section === id)
+  );
+
+  const titles = {
+    dashboard:"Analytics Dashboard",
+    students:"Student Management",
+    addStudent:"Student Registration",
+    reports:"Placement Reports"
+  };
+  document.getElementById("pageTitle").textContent = titles[id];
+}
+
+document.querySelectorAll(".sidebar button").forEach(button => {
+  button.addEventListener("click", () => {
+    showSection(button.dataset.section);
+    if (button.dataset.section === "students") renderStudents();
+  });
+});
+
+document.getElementById("topAddBtn").addEventListener("click", () => {
+  resetForm();
+  showSection("addStudent");
+});
+
+document.getElementById("cancelBtn").addEventListener("click", () => {
+  resetForm();
+  showSection("students");
+});
+
+function renderDashboard() {
+  const placed = placedStudents();
+  const pending = students.filter(s => s.status === "Pending").length;
+  const rate = placementRate();
+  const average = placed.length
+    ? placed.reduce((sum, s) => sum + Number(s.salary || 0), 0) / placed.length
+    : 0;
+
+  document.getElementById("totalStudents").textContent = students.length;
+  document.getElementById("placedStudents").textContent = placed.length;
+  document.getElementById("pendingStudents").textContent = pending;
+  document.getElementById("placementRate").textContent = rate + "%";
+  document.getElementById("averageSalary").textContent = money(average);
+
+  renderDepartmentChart();
+  renderStatusChart();
+
+  const recent = students.slice(-5).reverse();
+  document.getElementById("recentTable").innerHTML = recent.length
+    ? recent.map(s => `<tr>
+        <td>${escapeHTML(s.name)}</td>
+        <td>${escapeHTML(s.department)}</td>
+        <td>${escapeHTML(s.company || "—")}</td>
+        <td>${statusPill(s.status)}</td>
+      </tr>`).join("")
+    : `<tr><td colspan="4" class="empty">No student records yet.</td></tr>`;
+}
+
+function renderDepartmentChart() {
+  const departments = [...new Set(students.map(s => s.department).filter(Boolean))].sort();
+
+  document.getElementById("departmentChart").innerHTML = departments.length
+    ? departments.map((dept, index) => {
+        const list = students.filter(s => s.department === dept);
+        const placed = list.filter(s => s.status === "Placed").length;
+        const percent = placementRate(list);
+        const colors = ["blue", "green", "orange", "pink", "cyan"];
+        return `<div class="chart-row">
+          <div class="chart-label">
+            <span>${escapeHTML(dept)} (${placed}/${list.length})</span>
+            <strong>${percent}%</strong>
+          </div>
+          <div class="track">
+            <div class="bar ${colors[index % colors.length]}" style="width:${percent}%"></div>
+          </div>
+        </div>`;
+      }).join("")
+    : `<p>No department data available.</p>`;
+}
+
+function renderStatusChart() {
+  const statuses = [
+    {name:"Placed", color:"green"},
+    {name:"Pending", color:"orange"},
+    {name:"Not Placed", color:"pink"}
+  ];
+
+  document.getElementById("statusChart").innerHTML = statuses.map(item => {
+    const count = students.filter(s => s.status === item.name).length;
+    const percent = students.length ? Math.round(count / students.length * 100) : 0;
+    return `<div class="chart-row">
+      <div class="chart-label">
+        <span>${item.name}</span><strong>${count} (${percent}%)</strong>
+      </div>
+      <div class="track">
+        <div class="bar ${item.color}" style="width:${percent}%"></div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function renderStudents() {
+  const search = document.getElementById("searchInput").value.toLowerCase().trim();
+  const dept = document.getElementById("departmentFilter").value;
+  const status = document.getElementById("statusFilter").value;
+
+  const filtered = students.filter(s => {
+    const searchable = [s.roll, s.name, s.email, s.company, s.department]
+      .join(" ").toLowerCase();
+    return searchable.includes(search)
+      && (!dept || s.department === dept)
+      && (!status || s.status === status);
+  });
+
+  document.getElementById("studentsTable").innerHTML = filtered.length
+    ? filtered.map(s => `<tr>
+        <td>${escapeHTML(s.roll)}</td>
+        <td>${escapeHTML(s.name)}<br><small style="color:#64748b">${escapeHTML(s.email)}</small></td>
+        <td>${escapeHTML(s.department)}</td>
+        <td>${escapeHTML(s.company || "—")}</td>
+        <td>${Number(s.salary || 0).toFixed(1)}</td>
+        <td>${statusPill(s.status)}</td>
+        <td><div class="actions">
+          <button class="btn btn-light" onclick="editStudent(${s.id})">Edit</button>
+          <button class="btn btn-danger" onclick="deleteStudent(${s.id})">Delete</button>
+        </div></td>
+      </tr>`).join("")
+    : `<tr><td colspan="7" class="empty">No matching students found.</td></tr>`;
+
+  document.getElementById("studentCount").textContent =
+    `Showing ${filtered.length} of ${students.length} students`;
+}
+
+["searchInput", "departmentFilter", "statusFilter"].forEach(id => {
+  document.getElementById(id).addEventListener("input", renderStudents);
+  document.getElementById(id).addEventListener("change", renderStudents);
+});
+
+document.getElementById("studentForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  const editId = document.getElementById("editId").value;
+  const student = {
+    roll: document.getElementById("roll").value.trim(),
+    name: document.getElementById("name").value.trim(),
+    email: document.getElementById("email").value.trim(),
+    department: document.getElementById("department").value,
+    company: document.getElementById("company").value.trim(),
+    salary: Number(document.getElementById("salary").value || 0),
+    status: document.getElementById("status").value,
+    graduationYear: Number(document.getElementById("graduationYear").value || 2027)
+  };
+
+  if (student.status !== "Placed") {
+    student.salary = 0;
+  } else if (!student.company) {
+    alert("Enter the company name for a placed student.");
+    document.getElementById("company").focus();
+    return;
+  }
+
+  if (students.some(s =>
+    s.roll.toLowerCase() === student.roll.toLowerCase() &&
+    String(s.id) !== editId
+  )) {
+    alert("This roll number already exists.");
+    document.getElementById("roll").focus();
+    return;
+  }
+
+  if (students.some(s =>
+    s.email.toLowerCase() === student.email.toLowerCase() &&
+    String(s.id) !== editId
+  )) {
+    alert("This email address already exists.");
+    document.getElementById("email").focus();
+    return;
+  }
+
+  if (editId) {
+    const index = students.findIndex(s => String(s.id) === editId);
+    if (index !== -1) students[index] = {...students[index], ...student};
+  } else {
+    student.id = students.length
+      ? Math.max(...students.map(s => Number(s.id))) + 1
+      : 1;
+    students.push(student);
+  }
+
+  saveStudents();
+  refreshAll();
+  resetForm();
+  showSection("students");
+});
+
+function editStudent(id) {
+  const s = students.find(item => item.id === id);
+  if (!s) return;
+
+  document.getElementById("editId").value = s.id;
+  document.getElementById("roll").value = s.roll;
+  document.getElementById("name").value = s.name;
+  document.getElementById("email").value = s.email;
+  document.getElementById("department").value = s.department;
+  document.getElementById("company").value = s.company || "";
+  document.getElementById("salary").value = s.salary || 0;
+  document.getElementById("status").value = s.status;
+  document.getElementById("graduationYear").value = s.graduationYear || 2027;
+  document.getElementById("formTitle").textContent = "Edit Student";
+  document.getElementById("saveBtn").textContent = "Update Student";
+  showSection("addStudent");
+}
+
+function deleteStudent(id) {
+  const s = students.find(item => item.id === id);
+  if (!s) return;
+
+  if (!confirm(`Delete student ${s.name} (${s.roll})? This cannot be undone.`)) return;
+
+  students = students.filter(item => item.id !== id);
+  saveStudents();
+  refreshAll();
+}
+
+function resetForm() {
+  document.getElementById("studentForm").reset();
+  document.getElementById("editId").value = "";
+  document.getElementById("graduationYear").value = 2027;
+  document.getElementById("salary").value = 0;
+  document.getElementById("formTitle").textContent = "Register New Student";
+  document.getElementById("saveBtn").textContent = "Save Student";
+}
+
+function renderReports() {
+  const placed = placedStudents();
+  const rate = placementRate();
+  const companies = [...new Set(placed.map(s => s.company.trim()).filter(Boolean))].sort();
+
+  document.getElementById("reportRate").textContent = rate + "%";
+  document.getElementById("companyCount").textContent = companies.length;
+
+  const highest = placed.reduce((best, s) =>
+    Number(s.salary || 0) > Number(best?.salary || 0) ? s : best, null);
+
+  document.getElementById("highestPackage").textContent =
+    highest ? money(highest.salary) : "₹0 LPA";
+  document.getElementById("highestStudent").textContent =
+    highest ? `${highest.name} · ${highest.company}` : "No placement data";
+
+  document.getElementById("companyTable").innerHTML = companies.length
+    ? companies.map(company => {
+        const list = placed.filter(s => s.company.trim() === company);
+        const average = list.reduce((sum, s) => sum + Number(s.salary || 0), 0) / list.length;
+        const max = Math.max(...list.map(s => Number(s.salary || 0)));
+        return `<tr>
+          <td>${escapeHTML(company)}</td>
+          <td>${list.length}</td>
+          <td>${money(average)}</td>
+          <td>${money(max)}</td>
+        </tr>`;
+      }).join("")
+    : `<tr><td colspan="4" class="empty">No placed students with company details.</td></tr>`;
+
+  const departments = [...new Set(students.map(s => s.department).filter(Boolean))].sort();
+  document.getElementById("departmentTable").innerHTML = departments.length
+    ? departments.map(dept => {
+        const list = students.filter(s => s.department === dept);
+        const placedCount = list.filter(s => s.status === "Placed").length;
+        return `<tr>
+          <td>${escapeHTML(dept)}</td>
+          <td>${list.length}</td>
+          <td>${placedCount}</td>
+          <td>${list.length - placedCount}</td>
+          <td>${placementRate(list)}%</td>
+        </tr>`;
+      }).join("")
+    : `<tr><td colspan="5" class="empty">No department data available.</td></tr>`;
+}
+
+function refreshAll() {
+  renderDashboard();
+  renderStudents();
+  renderReports();
+}
+
+function downloadCSV(filename, rows) {
+  if (!rows.length) {
+    alert("There is no data to export.");
+    return;
+  }
+
+  const csv = rows.map(row => row.map(value =>
+    '"' + String(value ?? "").replace(/"/g, '""') + '"'
+  ).join(",")).join("\r\n");
+
+  const blob = new Blob(["\uFEFF" + csv], {type:"text/csv;charset=utf-8;"});
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+document.getElementById("exportStudents").addEventListener("click", () => {
+  const rows = [
+    ["Roll Number","Student Name","Email","Department","Company","Package (LPA)","Status","Graduation Year"],
+    ...students.map(s => [
+      s.roll, s.name, s.email, s.department, s.company,
+      s.salary, s.status, s.graduationYear
+    ])
+  ];
+  downloadCSV("placement_student_report.csv", rows);
+});
+
+document.getElementById("exportCompanies").addEventListener("click", () => {
+  const companies = [...new Set(placedStudents().map(s => s.company.trim()).filter(Boolean))].sort();
+  const rows = [["Company","Placed Students","Average Package (LPA)","Highest Package (LPA)"]];
+
+  companies.forEach(company => {
+    const list = placedStudents().filter(s => s.company.trim() === company);
+    const average = list.reduce((sum, s) => sum + Number(s.salary || 0), 0) / list.length;
+    const max = Math.max(...list.map(s => Number(s.salary || 0)));
+    rows.push([company, list.length, average.toFixed(2), max.toFixed(2)]);
+  });
+
+  downloadCSV("placement_company_report.csv", rows);
+});
+
+document.getElementById("printReport").addEventListener("click", () => {
+  showSection("reports");
+  window.print();
+});
+
+refreshAll();
+</script>
+</body>
+</html>
